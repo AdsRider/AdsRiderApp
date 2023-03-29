@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">AdsRider</string>
+    <string name="title_activity_start">StartActivity</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_swap_coin">SwapCoin</string>
+    <string name="title_rent_bike">RentBike</string>
+    <string name="title_withdrawal">Withdrawal</string>
+    <string name="title_buy_ticket">BuyTicket</string>
+    <string name="title_day">1일권</string>
+    <string name="title_month">1달권</string>
+    <string name="title_year">1년권</string>
+    <string name="title_day_ticket">DayTicket</string>
+    <string name="title_activity_ticket_day">TicketDay</string>
+    <string name="title_activity_ticket_month">TicketMonth</string>
+    <string name="title_activity_ticket_year">TicketYear</string>
+    <string name="title_activity_month_ticket">MonthTicket</string>
+    <string name="title_activity_year_ticket">YearTicket</string>
+</resources>
