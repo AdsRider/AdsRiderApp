@@ -5,11 +5,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -49,20 +50,11 @@ sealed class BottomNavItem(val icon: Int, val screenRoute: String) {
     object ButTicket: BottomNavItem(R.drawable.buy_ticket, "BUY TICKET")
     object Withdrawal: BottomNavItem(R.drawable.withdrawal, "WITHDRAWAL")
 }
-
-@Composable
-fun BottomNavigationGraph(navController: NavHostController) {
-    NavHost(
-        navController = navController,
-        startDestination = BottomNavItem.Home.screenRoute) {
-        composable(BottomNavItem.Home.screenRoute) { HomeScreen() }
-        composable(BottomNavItem.RentBike.screenRoute) { RentBikeScreen() }
-        composable(BottomNavItem.ButTicket.screenRoute) { BuyTicketScreen() }
-        composable(BottomNavItem.Withdrawal.screenRoute) { WithdrawalScreen() }
-        composable(BottomNavItem.SwapCoin.screenRoute) { SwapCoinScreen() }
-    }
+sealed class TicketTabItem(val term: String, val screenRoute: String) {
+    object Day: TicketTabItem("1일권", "DAY")
+    object Month: TicketTabItem("1달권", "MONTH")
+    object Year: TicketTabItem("1년권", "YEAR")
 }
-
 
 @Composable
 fun AdsRider() {
@@ -101,6 +93,7 @@ fun TopBar() {
         }
     }
 }
+
 @Composable
 fun HomeScreen() {
     Box(
@@ -117,6 +110,208 @@ fun HomeScreen() {
             color = Color.White,
             modifier = Modifier.align(Alignment.Center)
         )
+    }
+}
+
+@Composable
+fun SwapCoinScreen() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.primary)
+    ) {
+        Text(
+            text = "코인 스왑",
+            fontSize = 50.sp,
+            style = MaterialTheme.typography.h1,
+            textAlign = TextAlign.Center,
+            color = Color.White,
+            modifier = Modifier.align(Alignment.Center)
+        )
+    }
+}
+@Composable
+fun WithdrawalScreen() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.primaryVariant)
+    ) {
+        Text(
+            text = "입출금",
+            fontSize = 50.sp,
+            style = MaterialTheme.typography.h1,
+            textAlign = TextAlign.Center,
+            color = Color.White,
+            modifier = Modifier.align(Alignment.Center)
+        )
+    }
+}
+
+@Composable
+fun BuyTicketScreen() {
+    val navController = rememberNavController()
+    Scaffold(
+        topBar = { TicketNavigation(navController = navController)}
+    ) {
+        Box(Modifier.padding(it)) {
+            TicketNavigationGraph(navController = navController)
+        }
+    }
+}
+
+@Composable
+fun YearTicketScreen() {
+    Box(Modifier.fillMaxSize(), Alignment.Center){
+        Column {
+            Box(
+                modifier = Modifier
+                    .height(400.dp)
+                    .width(300.dp)
+                    .clip(RoundedCornerShape(50.dp))
+                    .background(MaterialTheme.colors.secondary),
+            ) {
+                Text(
+                    text = "1년권",
+                    fontSize = 50.sp,
+                    style = MaterialTheme.typography.h1,
+                    textAlign = TextAlign.Center,
+                    color = Color.White,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+            Button(
+                onClick = { /*TODO*/ },
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            ) {
+                Text(text = "결제하기")
+            }
+        }
+    }
+}
+
+@Composable
+fun MonthTicketScreen() {
+    Box(Modifier.fillMaxSize(), Alignment.Center){
+        Column {
+            Box(
+                modifier = Modifier
+                    .height(400.dp)
+                    .width(300.dp)
+                    .clip(RoundedCornerShape(50.dp))
+                    .background(MaterialTheme.colors.secondary),
+            ) {
+                Text(
+                    text = "1달권",
+                    fontSize = 50.sp,
+                    style = MaterialTheme.typography.h1,
+                    textAlign = TextAlign.Center,
+                    color = Color.White,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+            Button(
+                onClick = { /*TODO*/ },
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            ) {
+                Text(text = "결제하기")
+            }
+        }
+    }
+}
+
+@Composable
+fun DayTicketScreen() {
+    Box(Modifier.fillMaxSize(), Alignment.Center){
+        Column {
+            Box(
+                modifier = Modifier
+                    .height(400.dp)
+                    .width(300.dp)
+                    .clip(RoundedCornerShape(50.dp))
+                    .background(MaterialTheme.colors.secondary),
+            ) {
+                Text(
+                    text = "1일권",
+                    fontSize = 50.sp,
+                    style = MaterialTheme.typography.h1,
+                    textAlign = TextAlign.Center,
+                    color = Color.White,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+            Button(
+                onClick = { /*TODO*/ },
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            ) {
+                Text(text = "결제하기")
+            }
+        }
+    }
+}
+
+@Composable
+fun TicketNavigationGraph(navController: NavHostController) {
+    NavHost(navController = navController,
+        startDestination = TicketTabItem.Day.screenRoute) {
+        composable(TicketTabItem.Day.screenRoute) {
+            DayTicketScreen()
+        }
+        composable(TicketTabItem.Month.screenRoute) {
+            MonthTicketScreen()
+        }
+        composable(TicketTabItem.Year.screenRoute) {
+            YearTicketScreen()
+        }
+    }
+}
+
+@Composable
+fun TicketNavigation(navController: NavController) {
+    var state by remember { mutableStateOf(0) }
+    val items = listOf<TicketTabItem>(
+        TicketTabItem.Day,
+        TicketTabItem.Month,
+        TicketTabItem.Year
+    )
+    TabRow(
+        selectedTabIndex = state,
+        backgroundColor = Color.White
+    ) {
+        items.forEachIndexed { index, item ->
+            Tab(
+                text = {
+                    Text(
+                        text = item.term,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                },
+                selected = state == index,
+                onClick = { state = index
+                    navController.navigate(item.screenRoute) {
+                        navController.graph.startDestinationRoute?.let {
+                            popUpTo(it) { saveState = true }
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun BottomNavigationGraph(navController: NavHostController) {
+    NavHost(
+        navController = navController,
+        startDestination = BottomNavItem.Home.screenRoute) {
+        composable(BottomNavItem.Home.screenRoute) { HomeScreen() }
+        composable(BottomNavItem.RentBike.screenRoute) { RentBikeScreen() }
+        composable(BottomNavItem.ButTicket.screenRoute) { BuyTicketScreen() }
+        composable(BottomNavItem.Withdrawal.screenRoute) { WithdrawalScreen() }
+        composable(BottomNavItem.SwapCoin.screenRoute) { SwapCoinScreen() }
     }
 }
 

@@ -13,44 +13,14 @@
         android:theme="@style/Theme.AdsRider"
         tools:targetApi="31">
         <activity
-            android:name=".YearTicket"
-            android:exported="false"
-            android:label="@string/title_activity_year_ticket"
-            android:theme="@style/Theme.AdsRider" />
-        <activity
-            android:name=".MonthTicket"
-            android:exported="false"
-            android:label="@string/title_activity_month_ticket"
-            android:theme="@style/Theme.AdsRider" />
-        <activity
-            android:name=".DayTicket"
-            android:exported="false"
-            android:label="@string/title_day_ticket"
-            android:theme="@style/Theme.AdsRider" />
-        <activity
             android:name=".HomeActivity"
             android:exported="false"
             android:label="@string/title_activity_home"
             android:theme="@style/Theme.AdsRider" />
         <activity
-            android:name=".BuyTicket"
-            android:exported="false"
-            android:label="@string/title_buy_ticket"
-            android:theme="@style/Theme.AdsRider" />
-        <activity
             android:name=".RentBike"
             android:exported="false"
             android:label="@string/title_rent_bike"
-            android:theme="@style/Theme.AdsRider" />
-        <activity
-            android:name=".SwapCoin"
-            android:exported="false"
-            android:label="@string/title_swap_coin"
-            android:theme="@style/Theme.AdsRider" />
-        <activity
-            android:name=".Withdrawal"
-            android:exported="false"
-            android:label="@string/title_withdrawal"
             android:theme="@style/Theme.AdsRider" />
         <activity
             android:name=".LoginActivity"
