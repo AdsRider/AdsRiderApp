@@ -75,10 +75,8 @@ fun TopBar() {
         modifier = Modifier.fillMaxWidth(),
         color = Color.White
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
                 .height(80.dp)
                 .padding(horizontal = 16.dp)
         ) {
@@ -87,10 +85,28 @@ fun TopBar() {
                 color = Color.Blue,
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center
+                modifier = Modifier.align(Alignment.Center)
             )
+            IconButton(
+                onClick = { /*TODO*/ },
+                modifier = Modifier.align(Alignment.CenterEnd)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.user_info),
+                    contentDescription = "USER INFO",
+                    modifier = Modifier.size(40.dp),
+                    tint = Color.Blue
+                )
+            }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun TopBarPreview() {
+    AdsRiderTheme {
+        TopBar()
     }
 }
 
@@ -269,7 +285,7 @@ fun TicketNavigationGraph(navController: NavHostController) {
 @Composable
 fun TicketNavigation(navController: NavController) {
     var state by remember { mutableStateOf(0) }
-    val items = listOf<TicketTabItem>(
+    val items = listOf(
         TicketTabItem.Day,
         TicketTabItem.Month,
         TicketTabItem.Year
@@ -317,7 +333,7 @@ fun BottomNavigationGraph(navController: NavHostController) {
 
 @Composable
 fun BottomNavigation(navController: NavController) {
-    val items = listOf<BottomNavItem>(
+    val items = listOf(
         BottomNavItem.Home,
         BottomNavItem.RentBike,
         BottomNavItem.ButTicket,
