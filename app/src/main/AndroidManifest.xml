@@ -3,6 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.capstone.adsrider">
 
+    <uses-feature android:name="android.hardware.camera" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,6 +18,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AdsRider"
         tools:targetApi="31">
+        <activity
+            android:name=".PathFind"
+            android:exported="true"
+            android:label="@string/title_activity_path_find"
+            android:theme="@style/Theme.AdsRider" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".MapAPi"
+            android:exported="true"
+            android:label="@string/title_activity_map_api"
+            android:theme="@style/Theme.AdsRider"/>
         <activity
             android:name=".HomeActivity"
             android:exported="false"
@@ -29,16 +51,13 @@
             android:theme="@style/Theme.AdsRider" />
         <activity
             android:name=".StartActivity"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/title_activity_start"
-            android:theme="@style/Theme.AdsRider">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:theme="@style/Theme.AdsRider" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <meta-data
+            android:name="com.naver.maps.map.CLIENT_ID"
+            android:value="2a5sl5l22n" />
     </application>
-    <uses-feature android:name="android.hardware.camera" />
-    <uses-permission android:name="android.permission.CAMERA" />
+
 </manifest>

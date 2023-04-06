@@ -16,4 +16,8 @@
     <string name="title_activity_ticket_year">TicketYear</string>
     <string name="title_activity_month_ticket">MonthTicket</string>
     <string name="title_activity_year_ticket">YearTicket</string>
+    <string name="title_activity_naver_map">NaverMap</string>
+    <string name="title_activity_map_api">MapAPi</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_path_find">PathFind</string>
 </resources>

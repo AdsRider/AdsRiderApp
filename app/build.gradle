@@ -81,6 +81,11 @@ dependencies {
     implementation 'com.google.mlkit:barcode-scanning:17.0.0'
     implementation platform('com.google.firebase:firebase-bom:31.2.3')
 
+    implementation 'io.github.fornewid:naver-map-compose:1.1.8'
+
+    implementation 'com.squareup.retrofit2:retrofit:2.6.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.6.0'
+
     testImplementation 'junit:junit:4.13.2'
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

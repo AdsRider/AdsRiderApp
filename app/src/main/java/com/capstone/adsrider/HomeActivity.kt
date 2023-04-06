@@ -1,5 +1,6 @@
 package com.capstone.adsrider
 
+import android.Manifest
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,7 +16,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -25,6 +25,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.capstone.adsrider.ui.theme.AdsRiderTheme
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberPermissionState
 
 class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -101,15 +103,6 @@ fun TopBar() {
         }
     }
 }
-
-@Preview(showBackground = true)
-@Composable
-fun TopBarPreview() {
-    AdsRiderTheme {
-        TopBar()
-    }
-}
-
 @Composable
 fun HomeScreen() {
     Box(
@@ -331,6 +324,7 @@ fun BottomNavigationGraph(navController: NavHostController) {
     }
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun BottomNavigation(navController: NavController) {
     val items = listOf(
@@ -347,6 +341,7 @@ fun BottomNavigation(navController: NavController) {
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
+        val cameraPermissionState = rememberPermissionState(permission = Manifest.permission.CAMERA)
 
         items.forEach { item ->
             BottomNavigationItem(
@@ -362,19 +357,13 @@ fun BottomNavigation(navController: NavController) {
                         navController.graph.startDestinationRoute?.let {
                             popUpTo(it) { saveState = true }
                         }
+                        if (item == BottomNavItem.RentBike)
+                            cameraPermissionState.launchPermissionRequest()
                         launchSingleTop = true
                         restoreState = true
                     }
                 }
             )
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun AdsRiderPreview() {
-    AdsRiderTheme {
-        AdsRider()
     }
 }
