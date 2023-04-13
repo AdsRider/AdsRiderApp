@@ -68,7 +68,12 @@ fun LoginScreen(content: () -> Unit) {
 
 @Composable
 fun Greeting(text: String) {
-    Text(text = text, style = MaterialTheme.typography.body2, color = Color.Gray, modifier = Modifier.padding(bottom = 12.dp))
+    Text(
+        text = text,
+        style = MaterialTheme.typography.body2,
+        color = Color.Gray,
+        modifier = Modifier.padding(bottom = 12.dp)
+    )
 }
 
 @Composable

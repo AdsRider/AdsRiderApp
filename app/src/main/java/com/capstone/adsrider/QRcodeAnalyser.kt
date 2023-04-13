@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit
 @SuppressLint("UnsafeOptInUsageError")
 class QRcodeAnalyser(
     private val onQRcodeDetected: (barcodes: List<Barcode>) -> Unit
-): ImageAnalysis.Analyzer {
+) : ImageAnalysis.Analyzer {
     private var lastAnalyzedTimeStamp = 0L
 
     override fun analyze(image: ImageProxy) {

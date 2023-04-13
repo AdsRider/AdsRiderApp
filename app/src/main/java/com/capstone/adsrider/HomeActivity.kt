@@ -46,16 +46,16 @@ class HomeActivity : ComponentActivity() {
 }
 
 sealed class BottomNavItem(val icon: Int, val screenRoute: String) {
-    object Home: BottomNavItem(R.drawable.home, "HOME")
-    object RentBike: BottomNavItem(R.drawable.rent_bike, "RENT BIKE")
-    object SwapCoin: BottomNavItem(R.drawable.swap_coin, "SWAP COIN")
-    object ButTicket: BottomNavItem(R.drawable.buy_ticket, "BUY TICKET")
-    object Withdrawal: BottomNavItem(R.drawable.withdrawal, "WITHDRAWAL")
+    object Home : BottomNavItem(R.drawable.home, "HOME")
+    object RentBike : BottomNavItem(R.drawable.rent_bike, "RENT BIKE")
+    object SwapCoin : BottomNavItem(R.drawable.swap_coin, "SWAP COIN")
+    object ButTicket : BottomNavItem(R.drawable.buy_ticket, "BUY TICKET")
+    object Withdrawal : BottomNavItem(R.drawable.withdrawal, "WITHDRAWAL")
 }
 sealed class TicketTabItem(val term: String, val screenRoute: String) {
-    object Day: TicketTabItem("1일권", "DAY")
-    object Month: TicketTabItem("1달권", "MONTH")
-    object Year: TicketTabItem("1년권", "YEAR")
+    object Day : TicketTabItem("1일권", "DAY")
+    object Month : TicketTabItem("1달권", "MONTH")
+    object Year : TicketTabItem("1년권", "YEAR")
 }
 
 @Composable
@@ -64,7 +64,7 @@ fun AdsRider() {
     Scaffold(
         topBar = { TopBar() },
         bottomBar = { BottomNavigation(navController = navController) }
-    ){
+    ) {
         Box(Modifier.padding(it)) {
             BottomNavigationGraph(navController = navController)
         }
@@ -103,6 +103,7 @@ fun TopBar() {
         }
     }
 }
+
 @Composable
 fun HomeScreen() {
     Box(
@@ -110,7 +111,7 @@ fun HomeScreen() {
             .fillMaxWidth()
             .height(600.dp)
             .background(MaterialTheme.colors.onSurface)
-    ){
+    ) {
         Text(
             text = "메인 페이지",
             fontSize = 50.sp,
@@ -139,6 +140,7 @@ fun SwapCoinScreen() {
         )
     }
 }
+
 @Composable
 fun WithdrawalScreen() {
     Box(
@@ -161,7 +163,7 @@ fun WithdrawalScreen() {
 fun BuyTicketScreen() {
     val navController = rememberNavController()
     Scaffold(
-        topBar = { TicketNavigation(navController = navController)}
+        topBar = { TicketNavigation(navController = navController) }
     ) {
         Box(Modifier.padding(it)) {
             TicketNavigationGraph(navController = navController)
@@ -171,14 +173,14 @@ fun BuyTicketScreen() {
 
 @Composable
 fun YearTicketScreen() {
-    Box(Modifier.fillMaxSize(), Alignment.Center){
+    Box(Modifier.fillMaxSize(), Alignment.Center) {
         Column {
             Box(
                 modifier = Modifier
                     .height(400.dp)
                     .width(300.dp)
                     .clip(RoundedCornerShape(50.dp))
-                    .background(MaterialTheme.colors.secondary),
+                    .background(MaterialTheme.colors.secondary)
             ) {
                 Text(
                     text = "1년권",
@@ -201,14 +203,14 @@ fun YearTicketScreen() {
 
 @Composable
 fun MonthTicketScreen() {
-    Box(Modifier.fillMaxSize(), Alignment.Center){
+    Box(Modifier.fillMaxSize(), Alignment.Center) {
         Column {
             Box(
                 modifier = Modifier
                     .height(400.dp)
                     .width(300.dp)
                     .clip(RoundedCornerShape(50.dp))
-                    .background(MaterialTheme.colors.secondary),
+                    .background(MaterialTheme.colors.secondary)
             ) {
                 Text(
                     text = "1달권",
@@ -231,14 +233,14 @@ fun MonthTicketScreen() {
 
 @Composable
 fun DayTicketScreen() {
-    Box(Modifier.fillMaxSize(), Alignment.Center){
+    Box(Modifier.fillMaxSize(), Alignment.Center) {
         Column {
             Box(
                 modifier = Modifier
                     .height(400.dp)
                     .width(300.dp)
                     .clip(RoundedCornerShape(50.dp))
-                    .background(MaterialTheme.colors.secondary),
+                    .background(MaterialTheme.colors.secondary)
             ) {
                 Text(
                     text = "1일권",
@@ -261,8 +263,10 @@ fun DayTicketScreen() {
 
 @Composable
 fun TicketNavigationGraph(navController: NavHostController) {
-    NavHost(navController = navController,
-        startDestination = TicketTabItem.Day.screenRoute) {
+    NavHost(
+        navController = navController,
+        startDestination = TicketTabItem.Day.screenRoute
+    ) {
         composable(TicketTabItem.Day.screenRoute) {
             DayTicketScreen()
         }
@@ -293,11 +297,12 @@ fun TicketNavigation(navController: NavController) {
                     Text(
                         text = item.term,
                         fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.Bold
                     )
                 },
                 selected = state == index,
-                onClick = { state = index
+                onClick = {
+                    state = index
                     navController.navigate(item.screenRoute) {
                         navController.graph.startDestinationRoute?.let {
                             popUpTo(it) { saveState = true }
@@ -315,7 +320,8 @@ fun TicketNavigation(navController: NavController) {
 fun BottomNavigationGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = BottomNavItem.Home.screenRoute) {
+        startDestination = BottomNavItem.Home.screenRoute
+    ) {
         composable(BottomNavItem.Home.screenRoute) { HomeScreen() }
         composable(BottomNavItem.RentBike.screenRoute) { RentBikeScreen() }
         composable(BottomNavItem.ButTicket.screenRoute) { BuyTicketScreen() }
@@ -357,8 +363,9 @@ fun BottomNavigation(navController: NavController) {
                         navController.graph.startDestinationRoute?.let {
                             popUpTo(it) { saveState = true }
                         }
-                        if (item == BottomNavItem.RentBike)
+                        if (item == BottomNavItem.RentBike) {
                             cameraPermissionState.launchPermissionRequest()
+                        }
                         launchSingleTop = true
                         restoreState = true
                     }

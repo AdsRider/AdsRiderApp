@@ -20,7 +20,7 @@ class LoginActivity : ComponentActivity() {
     private lateinit var googleSignInClient: GoogleSignInClient
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val googleSignInResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        result: ActivityResult ->
+            result: ActivityResult ->
         if (result.resultCode == RESULT_OK) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
             try {
