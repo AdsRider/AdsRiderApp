@@ -79,7 +79,7 @@ fun TopBar() {
     ) {
         Box(
             modifier = Modifier
-                .height(80.dp)
+                .height(75.dp)
                 .padding(horizontal = 16.dp)
         ) {
             Text(
@@ -161,7 +161,7 @@ fun WithdrawalScreen() {
 fun BuyTicketScreen() {
     val navController = rememberNavController()
     Scaffold(
-        topBar = { TicketNavigation(navController = navController)}
+        topBar = { TicketNavigation(navController = navController) }
     ) {
         Box(Modifier.padding(it)) {
             TicketNavigationGraph(navController = navController)
