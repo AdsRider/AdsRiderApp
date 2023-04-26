@@ -5,7 +5,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -52,6 +55,7 @@ sealed class BottomNavItem(val icon: Int, val screenRoute: String) {
     object ButTicket : BottomNavItem(R.drawable.buy_ticket, "BUY TICKET")
     object Withdrawal : BottomNavItem(R.drawable.withdrawal, "WITHDRAWAL")
 }
+
 sealed class TicketTabItem(val term: String, val screenRoute: String) {
     object Day : TicketTabItem("1일권", "DAY")
     object Month : TicketTabItem("1달권", "MONTH")
@@ -142,19 +146,64 @@ fun SwapCoinScreen() {
 }
 
 @Composable
+fun RowScope.TableCell(
+    text: String,
+    weight: Float
+) {
+    Text(
+        text = text,
+        Modifier
+            .border(1.dp, Color.Black)
+            .weight(weight)
+            .padding(8.dp)
+    )
+}
+
+@Composable
 fun WithdrawalScreen() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colors.primaryVariant)
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxSize()
+    )
+    {
+        Text(text = "입출금")
+        LazyColumn(Modifier.fillMaxSize().padding(16.dp)) {
+            val column1Weight = .3f // 30%
+            val column2Weight = .7f // 70%
+
+            val tableData = listOf(Pair("원화", "x 원"), Pair("ADS", "y 코인"))
+
+            item {
+                Row(Modifier.background(Color.Gray)) {
+                    TableCell(text = "총 보유 자산", weight = 1f)
+                }
+            }
+            items(tableData) {
+                val (id, text) = it
+                Row(Modifier.fillMaxWidth()) {
+                    TableCell(text = id.toString(), weight = column1Weight)
+                    TableCell(text = text, weight = column2Weight)
+                }
+            }
+        }
+
+    }
+}
+
+@Composable
+fun RadioButton() {
+    val selectedValue = remember { mutableStateOf("") }
+    val label = "Item"
+    Row(
+        verticalAlignment = Alignment.CenterVertically
     ) {
+        RadioButton(
+            selected = selectedValue.value == label,
+            onClick = { selectedValue.value = label }
+        )
         Text(
-            text = "입출금",
-            fontSize = 50.sp,
-            style = MaterialTheme.typography.h1,
-            textAlign = TextAlign.Center,
-            color = Color.White,
-            modifier = Modifier.align(Alignment.Center)
+            text = label,
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }
@@ -323,10 +372,12 @@ fun BottomNavigationGraph(navController: NavHostController) {
         startDestination = BottomNavItem.Home.screenRoute
     ) {
         composable(BottomNavItem.Home.screenRoute) { HomeScreen() }
-        composable(BottomNavItem.RentBike.screenRoute) { RentBikeScreen() }
+        composable(BottomNavItem.RentBike.screenRoute) { RentBikeScreen(navController) }
         composable(BottomNavItem.ButTicket.screenRoute) { BuyTicketScreen() }
         composable(BottomNavItem.Withdrawal.screenRoute) { WithdrawalScreen() }
         composable(BottomNavItem.SwapCoin.screenRoute) { SwapCoinScreen() }
+
+        composable("NaverMap") { NaverMapScreen(navController) }
     }
 }
 
