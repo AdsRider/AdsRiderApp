@@ -11,6 +11,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -19,7 +20,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.capstone.adsrider.TicketTabItem
-
+import com.capstone.adsrider.ui.theme.AdsRiderTheme
 
 
 @Composable
@@ -38,28 +39,31 @@ fun BuyTicketScreen() {
 @Composable
 fun YearTicketScreen() {
     Box(Modifier.fillMaxSize(), Alignment.Center) {
-        Column {
-            Box(
-                modifier = Modifier
-                    .height(400.dp)
-                    .width(300.dp)
-                    .clip(RoundedCornerShape(50.dp))
-                    .background(MaterialTheme.colors.secondary)
-            ) {
+        Box(
+            modifier = Modifier
+                .height(400.dp)
+                .width(300.dp)
+                .clip(RoundedCornerShape(50.dp))
+                .background(MaterialTheme.colors.secondary)
+        ) {
+            Column (
+                Modifier.align(Alignment.TopCenter)
+            ){
+                Spacer(modifier = Modifier.height(30.dp))
                 Text(
                     text = "1년권",
-                    fontSize = 50.sp,
-                    style = MaterialTheme.typography.h1,
-                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.h2,
                     color = Color.White,
-                    modifier = Modifier.align(Alignment.Center)
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
                 )
-            }
-            Button(
-                onClick = { /*TODO*/ },
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            ) {
-                Text(text = "결제하기")
+                Text(
+                    text = "\n1년 동안 이용 가능\n\n무제한 반복 대여 가능\n\n\n결제금액     30,000원",
+                    color = Color.White,
+                    fontSize = 25.sp,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
             }
         }
     }
@@ -68,28 +72,31 @@ fun YearTicketScreen() {
 @Composable
 fun MonthTicketScreen() {
     Box(Modifier.fillMaxSize(), Alignment.Center) {
-        Column {
-            Box(
-                modifier = Modifier
-                    .height(400.dp)
-                    .width(300.dp)
-                    .clip(RoundedCornerShape(50.dp))
-                    .background(MaterialTheme.colors.secondary)
-            ) {
+        Box(
+            modifier = Modifier
+                .height(400.dp)
+                .width(300.dp)
+                .clip(RoundedCornerShape(50.dp))
+                .background(MaterialTheme.colors.secondary)
+        ) {
+            Column (
+                Modifier.align(Alignment.TopCenter)
+            ){
+                Spacer(modifier = Modifier.height(30.dp))
                 Text(
                     text = "1달권",
-                    fontSize = 50.sp,
-                    style = MaterialTheme.typography.h1,
-                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.h2,
                     color = Color.White,
-                    modifier = Modifier.align(Alignment.Center)
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
                 )
-            }
-            Button(
-                onClick = { /*TODO*/ },
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            ) {
-                Text(text = "결제하기")
+                Text(
+                    text = "\n1달 동안 이용 가능\n\n무제한 반복 대여 가능\n\n\n결제금액      7,000원",
+                    color = Color.White,
+                    fontSize = 25.sp,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
             }
         }
     }
@@ -98,32 +105,35 @@ fun MonthTicketScreen() {
 @Composable
 fun DayTicketScreen() {
     Box(Modifier.fillMaxSize(), Alignment.Center) {
-        Column {
-            Box(
-                modifier = Modifier
-                    .height(400.dp)
-                    .width(300.dp)
-                    .clip(RoundedCornerShape(50.dp))
-                    .background(MaterialTheme.colors.secondary)
+        Box(
+            modifier = Modifier
+                .height(400.dp)
+                .width(300.dp)
+                .clip(RoundedCornerShape(50.dp))
+                .background(MaterialTheme.colors.secondary)
             ) {
-                Text(
-                    text = "1일권",
-                    fontSize = 50.sp,
-                    style = MaterialTheme.typography.h1,
-                    textAlign = TextAlign.Center,
-                    color = Color.White,
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            }
-            Button(
-                onClick = { /*TODO*/ },
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            ) {
-                Text(text = "결제하기")
+                Column (
+                    Modifier.align(Alignment.TopCenter)
+                    ){
+                    Spacer(modifier = Modifier.height(30.dp))
+                    Text(
+                        text = "1일권",
+                        style = MaterialTheme.typography.h2,
+                        color = Color.White,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        text = "\n1일 동안 2시간 이용 가능\n\n대여횟수 제한없이\n재 대여 가능\n\n결제금액      2,000원",
+                        color = Color.White,
+                        fontSize = 25.sp,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
         }
     }
-}
 
 @Composable
 fun TicketNavigationGraph(navController: NavHostController) {
@@ -177,5 +187,13 @@ fun TicketNavigation(navController: NavController) {
                 }
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun preview() {
+    AdsRiderTheme {
+        YearTicketScreen()
     }
 }

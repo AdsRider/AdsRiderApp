@@ -70,7 +70,7 @@ fun PathFindNavigationGraph(navController: NavHostController) {
             QRScanner(navController = navController)
         }
         composable("ad select") {
-            AdsView(navController = navController)
+            AdsView()
         }
     }
 }

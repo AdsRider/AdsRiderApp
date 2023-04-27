@@ -83,7 +83,7 @@ fun NaverMapScreen(navController: NavHostController) {
 }
 
 @Composable
-fun AdsView(navController: NavHostController) {
+fun AdsView() {
     val scrollState = rememberScrollState()
     val adsExample = AdsExample()
     val ads = listOf(
