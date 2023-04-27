@@ -79,7 +79,7 @@ fun TopBar() {
     ) {
         Box(
             modifier = Modifier
-                .height(80.dp)
+                .height(75.dp)
                 .padding(horizontal = 16.dp)
         ) {
             Text(
