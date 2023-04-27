@@ -1,4 +1,4 @@
-package com.capstone.adsrider
+package com.capstone.adsrider.model
 
 import org.threeten.bp.LocalDateTime
 

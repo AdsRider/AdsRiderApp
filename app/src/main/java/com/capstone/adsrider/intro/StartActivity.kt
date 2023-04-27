@@ -1,4 +1,4 @@
-package com.capstone.adsrider
+package com.capstone.adsrider.intro
 
 import android.content.Intent
 import android.os.Bundle
@@ -20,7 +20,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.lifecycleScope
+import com.capstone.adsrider.HomeActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.capstone.adsrider.R
 
 class StartActivity : ComponentActivity() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()

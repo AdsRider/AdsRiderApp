@@ -1,4 +1,4 @@
-package com.capstone.adsrider
+package com.capstone.adsrider.main.rentbike
 
 import android.os.Bundle
 import android.util.Log

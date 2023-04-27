@@ -1,4 +1,4 @@
-package com.capstone.adsrider
+package com.capstone.adsrider.main.rentbike
 
 import android.annotation.SuppressLint
 import android.util.Log

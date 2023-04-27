@@ -1,4 +1,4 @@
-package com.capstone.adsrider
+package com.capstone.adsrider.main.rentbike
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.capstone.adsrider.BottomNavigationGraph
 import com.capstone.adsrider.ui.theme.AdsRiderTheme
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.NaverMap

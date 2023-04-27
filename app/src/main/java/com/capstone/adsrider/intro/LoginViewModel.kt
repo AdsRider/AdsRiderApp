@@ -1,4 +1,4 @@
-package com.capstone.adsrider
+package com.capstone.adsrider.intro
 
 import android.content.Context
 import androidx.lifecycle.ViewModel

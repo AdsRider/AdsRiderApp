@@ -1,5 +1,7 @@
-package com.capstone.adsrider
+package com.capstone.adsrider.main.rentbike
 
+import com.capstone.adsrider.R
+import com.capstone.adsrider.model.AdsInfo
 import org.threeten.bp.LocalDateTime
 
 class AdsExample {

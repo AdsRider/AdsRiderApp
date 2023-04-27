@@ -19,13 +19,7 @@
         android:theme="@style/Theme.AdsRider"
         tools:targetApi="31">
         <activity
-            android:name=".Adselection"
-            android:exported="true"
-            android:label="@string/title_activity_ad_selection"
-            android:theme="@style/Theme.AdsRider">
-        </activity>
-        <activity
-            android:name=".PathFind"
+            android:name=".main.rentbike.PathFind"
             android:exported="false"
             android:label="@string/title_activity_path_find"
             android:theme="@style/Theme.AdsRider" />
@@ -35,17 +29,17 @@
             android:label="@string/title_activity_home"
             android:theme="@style/Theme.AdsRider" />
         <activity
-            android:name=".RentBike"
+            android:name=".main.rentbike.RentBike"
             android:exported="false"
             android:label="@string/title_rent_bike"
             android:theme="@style/Theme.AdsRider" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".intro.LoginActivity"
             android:exported="false"
             android:label="@string/title_activity_login"
             android:theme="@style/Theme.AdsRider" />
         <activity
-            android:name=".StartActivity"
+            android:name=".intro.StartActivity"
             android:exported="true"
             android:label="@string/title_activity_start"
             android:theme="@style/Theme.AdsRider">
