@@ -1,6 +1,6 @@
 @file:JvmName("ResultPathKt")
 
-package com.capstone.adsrider.main.rentbike
+package com.capstone.adsrider.model
 
 import com.capstone.adsrider.network.NaverAPI
 import retrofit2.Retrofit
@@ -121,8 +121,8 @@ val bikeretrofit = Retrofit.Builder()
     .addConverterFactory(GsonConverterFactory.create())
     .build()
 
-object ApiObject {
-    val retrofitService: NaverAPI by lazy {
+object NaverApiObject {
+    val NaverRetrofitService: NaverAPI by lazy {
         bikeretrofit.create(NaverAPI::class.java)
     }
 }

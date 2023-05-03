@@ -1,26 +1,37 @@
 package com.capstone.adsrider.main.rentbike
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.rememberAsyncImagePainter
 import com.capstone.adsrider.BottomNavigationGraph
+import com.capstone.adsrider.model.AdsInfo
+import com.capstone.adsrider.model.adsList
 import com.capstone.adsrider.ui.theme.AdsRiderTheme
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.NaverMap
+import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class PathFind : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,21 +44,36 @@ class PathFind : ComponentActivity() {
     }
 }
 
+fun getAdsList(courseList: MutableList<AdsInfo>) {
+    adsList.enqueue(object: Callback<List<AdsInfo>> {
+        override fun onResponse(call: Call<List<AdsInfo>>, response: Response<List<AdsInfo>>) {
+            if (response.isSuccessful) {
+                val lst = response.body()!!
+                lst.forEach {
+                    courseList.add(it)
+                }
+            }
+        }
+        override fun onFailure(call: Call<List<AdsInfo>>, t: Throwable) {
+            Log.e("API_ERROR", "Network request failed: ${t.message}")
+        }
+    })
+}
+
 @Composable
 fun PathFindScreen() {
-    var navController = rememberNavController()
+    val navController = rememberNavController()
     Scaffold(bottomBar = {
         Button(
-            onClick = {navController.navigate("ad select")},
-            modifier = Modifier.fillMaxWidth()) {
+            onClick = { navController.navigate("ad select") },
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Text(text = "광고 선택")
         }
     }) {
         Box(Modifier.padding(it)) {
             BottomNavigationGraph(navController = navController)
         }
-    }
-    Column(modifier = Modifier.fillMaxSize()) {
     }
 }
 
@@ -82,47 +108,82 @@ fun NaverMapScreen(navController: NavHostController) {
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AdsView() {
-    val scrollState = rememberScrollState()
-    val adsExample = AdsExample()
-    val ads = listOf(
-        adsExample.google,
-        adsExample.tukorea
-    )
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .verticalScroll(scrollState)) {
-        Text(modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            fontSize = 30.sp,
-            text = "광고 선택")
-        ads.forEach {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp)
-                    .border(width = 4.dp, color = Color.Black)
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Spacer(modifier = Modifier.size(20.dp))
-                    Image(
-                        painter = painterResource(id = it.file),
-                        contentDescription = "Ads Image", Modifier.size(120.dp)
+    val state = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    val scope = rememberCoroutineScope()
+    val courseList = remember { mutableListOf<AdsInfo>() }
+    getAdsList(courseList)
+    ModalBottomSheetLayout(
+        sheetState = state,
+        sheetShape = RoundedCornerShape(20.dp),
+        sheetContent = {
+            LazyColumn(modifier = Modifier.height(200.dp)) {
+                items(courseList) {
+                    Text(
+                        style = MaterialTheme.typography.h5,
+                        text = it.title
                     )
-                    Spacer(modifier = Modifier.size(20.dp))
-                    Column {
-                        Text(text = it.user_id, fontSize = 30.sp)
-                        Text(
-                            fontSize = 20.sp, text = "리워드:\t${it.amount} ads\n" +
-                                "기한:\t\t${String.format("%02d", it.close_date.monthValue)}월" +
-                                "${String.format("%02d", it.close_date.dayOfMonth)}일" +
-                                "${String.format("%02d", it.close_date.hour)}:" +
-                                "${String.format("%02d", it.close_date.minute)}까지"
-                        )
-                    }
+                    Text(
+                        style = MaterialTheme.typography.body1,
+                        text = "광고정보: ${it.subtitle}\n" + "지급 코인: ${it.reward}"
+                    )
+                    Text(
+                        style = MaterialTheme.typography.h6,
+                        color = Color.LightGray,
+                        text = "광고디자인"
+                    )
+                    Image(
+                        painter = rememberAsyncImagePainter("https://adsrider.wo.tc/api/image/${it.image_id}"),
+                        contentDescription = "Ads Design"
+                    )
                 }
             }
         }
+    ) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = Color.LightGray)
+        ) {
+            item {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, top = 20.dp),
+                    style = MaterialTheme.typography.h4,
+                    fontWeight = FontWeight.Bold,
+                    text = "광고 선택"
+                )
+            }
+            items(courseList) {
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, end = 70.dp)
+                    .clickable { scope.launch { state.show() } }
+                ) {
+                    Text(
+                        style = MaterialTheme.typography.h5,
+                        textAlign = TextAlign.Left,
+                        text = it.title
+                    )
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        style = MaterialTheme.typography.h5,
+                        textAlign = TextAlign.Right,
+                        text = "${it.reward} ads"
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun preview() {
+    AdsRiderTheme {
+        AdsView()
     }
 }

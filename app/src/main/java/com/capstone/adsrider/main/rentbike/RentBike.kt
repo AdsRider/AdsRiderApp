@@ -3,6 +3,7 @@ package com.capstone.adsrider.main.rentbike
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.camera.core.CameraSelector
@@ -10,12 +11,20 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -76,7 +85,7 @@ fun PathFindNavigationGraph(navController: NavHostController) {
 }
 
 @Composable
-    fun QRScanner(navController: NavHostController) {
+fun QRScanner(navController: NavHostController) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     var preview by remember { mutableStateOf<Preview?>(null) }
@@ -119,6 +128,7 @@ fun PathFindNavigationGraph(navController: NavHostController) {
                         barcodes.forEach { barcode ->
                             barcode.rawValue?.let { barcodeValue ->
                                 barCodeVal.value = barcodeValue
+                                Toast.makeText(context, barcodeValue, Toast.LENGTH_SHORT).show()
                             }
                         }
                     }
@@ -144,19 +154,13 @@ fun PathFindNavigationGraph(navController: NavHostController) {
             }
         )
     }
-    Box(modifier = Modifier.fillMaxHeight(), Alignment.BottomEnd) {
+    Box(modifier = Modifier
+        .fillMaxHeight()
+        .padding(end = 0.dp), Alignment.BottomEnd) {
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = { navController.navigate("path find") }) {
             Text(text = "목적지 검색")
         }
-    }
-}
-
-@androidx.compose.ui.tooling.preview.Preview(showBackground = true)
-@Composable
-fun RentBikeScreenPreview() {
-    AdsRiderTheme {
-        RentBikeScreen()
     }
 }

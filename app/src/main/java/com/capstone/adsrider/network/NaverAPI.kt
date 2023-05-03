@@ -1,6 +1,6 @@
 package com.capstone.adsrider.network
 
-import com.capstone.adsrider.main.rentbike.ResultPath
+import com.capstone.adsrider.model.ResultPath
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
