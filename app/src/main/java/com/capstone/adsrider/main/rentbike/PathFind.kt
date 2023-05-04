@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -26,12 +25,16 @@ import com.capstone.adsrider.BottomNavigationGraph
 import com.capstone.adsrider.model.AdsInfo
 import com.capstone.adsrider.model.adsList
 import com.capstone.adsrider.ui.theme.AdsRiderTheme
+import com.holix.android.bottomsheetdialog.compose.BottomSheetDialog
+import com.holix.android.bottomsheetdialog.compose.BottomSheetDialogProperties
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.NaverMap
-import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 class PathFind : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,18 +47,20 @@ class PathFind : ComponentActivity() {
     }
 }
 
-fun getAdsList(courseList: MutableList<AdsInfo>) {
+suspend fun getAdsList(): List<AdsInfo> = suspendCoroutine { continuation ->
     adsList.enqueue(object: Callback<List<AdsInfo>> {
         override fun onResponse(call: Call<List<AdsInfo>>, response: Response<List<AdsInfo>>) {
             if (response.isSuccessful) {
                 val lst = response.body()!!
-                lst.forEach {
-                    courseList.add(it)
-                }
+                continuation.resume(lst)
+            } else {
+                continuation.resumeWithException(
+                    Throwable("API request failed with response code: ${response.code()}")
+                )
             }
         }
         override fun onFailure(call: Call<List<AdsInfo>>, t: Throwable) {
-            Log.e("API_ERROR", "Network request failed: ${t.message}")
+            continuation.resumeWithException(t)
         }
     })
 }
@@ -111,79 +116,110 @@ fun NaverMapScreen(navController: NavHostController) {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AdsView() {
-    val state = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    val scope = rememberCoroutineScope()
-    val courseList = remember { mutableListOf<AdsInfo>() }
-    getAdsList(courseList)
-    ModalBottomSheetLayout(
-        sheetState = state,
-        sheetShape = RoundedCornerShape(20.dp),
-        sheetContent = {
-            LazyColumn(modifier = Modifier.height(200.dp)) {
-                items(courseList) {
+    var state by remember { mutableStateOf(false) }
+    var courseList by remember { mutableStateOf<List<AdsInfo>>(emptyList()) }
+    var index by remember { mutableStateOf<Int>(0) }
+
+    LaunchedEffect(Unit) {
+        try {
+            val lst = getAdsList()
+            courseList = lst
+        } catch (e: Exception) {
+            Log.e("API_ERROR", "API request failed: ${e.message}")
+        }
+    }
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.LightGray)
+    ) {
+
+        item {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, top = 20.dp),
+                style = MaterialTheme.typography.h4,
+                fontWeight = FontWeight.Bold,
+                text = "광고 선택"
+            )
+        }
+        items(courseList) {
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 20.dp, end = 70.dp)
+                .clickable {
+                    state = true
+                    index = courseList.indexOf(it)
+                }
+            ) {
+                Text(
+                    style = MaterialTheme.typography.h5,
+                    textAlign = TextAlign.Left,
+                    text = it.title
+                )
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    style = MaterialTheme.typography.h5,
+                    textAlign = TextAlign.Right,
+                    text = "${it.reward} ads"
+                )
+            }
+        }
+    }
+    if (state) {
+        BottomSheetDialog(
+            onDismissRequest = { state = false },
+            properties = BottomSheetDialogProperties(
+                dismissOnBackPress = true,
+                dismissOnClickOutside = true,
+                navigationBarColor = MaterialTheme.colors.surface
+            )
+        ) {
+            Surface(
+                shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+
+                ) {
                     Text(
                         style = MaterialTheme.typography.h5,
-                        text = it.title
+                        text = courseList[index].title
                     )
                     Text(
                         style = MaterialTheme.typography.body1,
-                        text = "광고정보: ${it.subtitle}\n" + "지급 코인: ${it.reward}"
+                        text = "광고정보: ${courseList[index].subtitle}\n" + "지급 코인: ${courseList[index].reward}"
                     )
                     Text(
                         style = MaterialTheme.typography.h6,
                         color = Color.LightGray,
                         text = "광고디자인"
                     )
-                    Image(
-                        painter = rememberAsyncImagePainter("https://adsrider.wo.tc/api/image/${it.image_id}"),
-                        contentDescription = "Ads Design"
-                    )
-                }
-            }
-        }
-    ) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color = Color.LightGray)
-        ) {
-            item {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 20.dp, top = 20.dp),
-                    style = MaterialTheme.typography.h4,
-                    fontWeight = FontWeight.Bold,
-                    text = "광고 선택"
-                )
-            }
-            items(courseList) {
-                Row(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 20.dp, end = 70.dp)
-                    .clickable { scope.launch { state.show() } }
-                ) {
-                    Text(
-                        style = MaterialTheme.typography.h5,
-                        textAlign = TextAlign.Left,
-                        text = it.title
-                    )
-                    Text(
+                    Divider(
                         modifier = Modifier.fillMaxWidth(),
-                        style = MaterialTheme.typography.h5,
-                        textAlign = TextAlign.Right,
-                        text = "${it.reward} ads"
+                        color = Color.LightGray,
+                        thickness = 1.dp
                     )
+                    Image(
+                        painter = rememberAsyncImagePainter("https://adsrider.wo.tc/api/image/${courseList[index].image_id}"),
+                        contentDescription = "Ads Design",
+                        modifier = Modifier.height(200.dp)
+                    )
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp),
+                        onClick = {}
+                        ) {
+                        Text(text = "광고 선택")
+                    }
                 }
             }
-        }
-    }
-}
 
-@Preview(showBackground = true)
-@Composable
-fun preview() {
-    AdsRiderTheme {
-        AdsView()
+        }
     }
 }
