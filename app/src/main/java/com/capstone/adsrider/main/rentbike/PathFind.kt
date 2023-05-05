@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
@@ -115,7 +116,7 @@ fun NaverMapScreen(navController: NavHostController) {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun AdsView() {
+fun AdsView(navController: NavHostController) {
     var state by remember { mutableStateOf(false) }
     var courseList by remember { mutableStateOf<List<AdsInfo>>(emptyList()) }
     var index by remember { mutableStateOf<Int>(0) }
@@ -213,13 +214,85 @@ fun AdsView() {
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(50.dp),
-                        onClick = {}
+                        onClick = {
+                            navController.navigate("ad exposure/${courseList[index].image_id}")
+                        }
                         ) {
                         Text(text = "광고 선택")
                     }
                 }
             }
-
         }
     }
 }
+
+@Composable
+fun AdsExposure(imageId: Int) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.LightGray)
+            .padding(16.dp)
+            .offset(y = (-30).dp)
+    ) {
+        Image(
+            painter = rememberAsyncImagePainter("https://adsrider.wo.tc/api/image/${imageId}}"),
+            contentDescription = "Ads Design",
+            modifier = Modifier
+                .height(500.dp)
+                .align(Alignment.Center)
+        )
+            Row(
+                modifier = Modifier
+                    .background(Color.White)
+                    .align(Alignment.BottomCenter)
+            ) {
+                Column(modifier = Modifier.weight(1F),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        color = Color.LightGray,
+                        textAlign = TextAlign.Center,
+                        text = "주행속도",
+                    )
+                    Text(
+                        textAlign = TextAlign.Center,
+                        text = "30km/s",
+                        fontSize = 20.sp
+                    )
+                }
+                Column(
+                    modifier = Modifier.weight(1F),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        color = Color.LightGray,
+                        textAlign = TextAlign.Center,
+                        text = "주행거리"
+                    )
+                    Text(
+                        textAlign = TextAlign.Center,
+                        text = "30km",
+                        fontSize = 20.sp
+
+                    )
+                }
+                Column(
+                    modifier = Modifier.weight(1F),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        color = Color.LightGray,
+                        textAlign = TextAlign.Center,
+                        text = "주행시간"
+                    )
+                    Text(
+                        textAlign = TextAlign.Center,
+                        text = "01:10:02",
+                        fontSize = 20.sp
+                    )
+                }
+            }
+        }
+    }
+

@@ -34,9 +34,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.capstone.adsrider.ui.theme.AdsRiderTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.common.util.concurrent.ListenableFuture
@@ -61,7 +63,7 @@ class RentBike : ComponentActivity() {
 
 @Composable
 fun RentBikeScreen() {
-    var navController = rememberNavController()
+    val navController = rememberNavController()
     Scaffold {
         Box(Modifier.padding(it)) {
             PathFindNavigationGraph(navController = navController)
@@ -79,7 +81,17 @@ fun PathFindNavigationGraph(navController: NavHostController) {
             QRScanner(navController = navController)
         }
         composable("ad select") {
-            AdsView()
+            AdsView(navController = navController)
+        }
+        composable("ad exposure/{imageId}",
+            arguments = listOf(
+                navArgument("imageId") {
+                    type = NavType.IntType
+                }
+            )
+        ) {
+            val imageId = it.arguments?.getInt("imageId")
+            AdsExposure(imageId!!)
         }
     }
 }
