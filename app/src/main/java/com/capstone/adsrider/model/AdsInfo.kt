@@ -1,10 +1,9 @@
 package com.capstone.adsrider.model
 
-import com.capstone.adsrider.network.AdsListAPI
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-data class AdsInfo(
+data class Ad(
     val id: Int,
     val title: String,
     val subtitle: String,
@@ -14,11 +13,3 @@ data class AdsInfo(
     val end_date: Number,
     val user_email: String
 )
-
-val adsRetrofit = Retrofit.Builder()
-    .baseUrl("https://adsrider.wo.tc/")
-    .addConverterFactory(GsonConverterFactory.create())
-    .build()
-
-val adsRetrofitService = adsRetrofit.create(AdsListAPI::class.java)
-val adsList = adsRetrofitService.getAdsList()

@@ -2,12 +2,9 @@
 
 package com.capstone.adsrider.model
 
-import com.capstone.adsrider.network.NaverAPI
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.io.Serializable
 
-data class ResultPath (
+data class NaverPath (
     val routes: List<Route>
 ) : Serializable {
     data class Route (
@@ -113,16 +110,4 @@ data class ResultPath (
         val congestion: Long,
         val speed: Long
     )
-}
-
-
-val bikeretrofit = Retrofit.Builder()
-    .baseUrl("https://map.naver.com/")
-    .addConverterFactory(GsonConverterFactory.create())
-    .build()
-
-object NaverApiObject {
-    val NaverRetrofitService: NaverAPI by lazy {
-        bikeretrofit.create(NaverAPI::class.java)
-    }
 }

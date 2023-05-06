@@ -45,7 +45,6 @@ import com.google.common.util.concurrent.ListenableFuture
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-
 @ExperimentalPermissionsApi
 class RentBike : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,9 +56,6 @@ class RentBike : ComponentActivity() {
         }
     }
 }
-
-
-
 
 @Composable
 fun RentBikeScreen() {
