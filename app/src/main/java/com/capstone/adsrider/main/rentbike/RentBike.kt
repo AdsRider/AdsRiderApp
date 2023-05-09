@@ -68,20 +68,24 @@ fun RentBikeScreen() {
         }
     }
 }
+
 @Composable
 fun PathFindNavigationGraph(navController: NavHostController) {
-    NavHost(navController = navController,
-        startDestination = "rent bike") {
+    NavHost(
+        navController = navController,
+        startDestination = "rent bike"
+    ) {
         composable("path find") {
-            NaverMapScreen(navController = navController)
+            PathFindScreen(navController = navController)
         }
-        composable("rent bike"){
+        composable("rent bike") {
             QRScanner(navController = navController)
         }
         composable("ad select") {
             AdsView(navController = navController)
         }
-        composable("ad exposure/{imageId}",
+        composable(
+            "ad exposure/{imageId}",
             arguments = listOf(
                 navArgument("imageId") {
                     type = NavType.IntType
@@ -111,7 +115,7 @@ fun QRScanner(navController: NavHostController) {
                     this.scaleType = PreviewView.ScaleType.FILL_CENTER
                     layoutParams = ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT
                     )
                     implementationMode = PreviewView.ImplementationMode.COMPATIBLE
                 }
@@ -175,8 +179,12 @@ fun QRScanner(navController: NavHostController) {
             color = Color.White,
             textAlign = TextAlign.Center
         )
+
+        Button(onClick = { navController.navigate("path find") }) {
+            Text("대여")
+        }
     }
-    if(state) {
+    if (state) {
         AlertDialog(
             onDismissRequest = { state = false },
             title = {

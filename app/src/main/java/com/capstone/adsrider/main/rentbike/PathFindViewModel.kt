@@ -1,52 +1,56 @@
 package com.capstone.adsrider.main.rentbike
 
-import android.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.capstone.adsrider.model.NaverPath
+import com.capstone.adsrider.model.NaverPlace
 import com.capstone.adsrider.service.NaverService
 import com.naver.maps.geometry.LatLng
-import com.naver.maps.map.NaverMap
-import com.naver.maps.map.overlay.PathOverlay
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class PathFindViewModel : ViewModel() {
     val naverService = NaverService()
 
-    fun generatePath(naverMap: NaverMap, start: String, destination: String) {
+    private val _places = MutableStateFlow(emptyList<NaverPlace.Place>())
+    val places get() = _places
+
+    private val _path = MutableStateFlow(emptyList<LatLng>())
+    val path get() = _path
+
+    fun getPlaces(start: LatLng, word: String) {
         viewModelScope.launch {
-            val routeSummary = naverService.getPath(start, destination)
-            drawPath(naverMap, routeSummary!!)
+            val startParam = "${start.latitude},${start.longitude}"
+            _places.value = naverService.getPlaces(startParam, word)!!
         }
     }
 
-    private fun drawPath(naverMap: NaverMap, summary: NaverPath.RouteSummary): PathOverlay {
-        val path = PathOverlay()
+    fun getPath(start: LatLng, destination: NaverPlace.Place) {
+        viewModelScope.launch {
+            val startParam = "${start.longitude},${start.latitude},name="
+            val destinationParam = destination.let {
+                "${it.x},${it.y},name=${it.title},placeid=${it.cid}"
+            }
 
-        val startLatLng = LatLng(
-            summary.start.location.split(",")[0].toDouble(),
-            summary.start.location.split(",")[1].toDouble()
-        )
+            val summary = naverService.getPath(startParam, destinationParam)!!
 
-        val waypoints = summary.road_summary.map {
-            LatLng(
-                it.location.split(",")[0].toDouble(),
-                it.location.split(",")[1].toDouble()
+            val startLatLng = LatLng(
+                summary.start.location.split(",")[1].toDouble(),
+                summary.start.location.split(",")[0].toDouble()
             )
+
+            val waypoints = summary.road_summary.map {
+                LatLng(
+                    it.location.split(",")[1].toDouble(),
+                    it.location.split(",")[0].toDouble()
+                )
+            }
+
+            val endLatLng = summary.end.location.split(",").let {
+                LatLng(it[1].toDouble(), it[0].toDouble())
+            }
+
+            _path.value = listOf(startLatLng) + waypoints + endLatLng
+            _places.value = emptyList()
         }
-
-        val endLatLng = summary.end.location.split(",").let {
-            LatLng(it[0].toDouble(), it[1].toDouble())
-        }
-
-        val fullPath: List<LatLng> = listOf(startLatLng) + waypoints + endLatLng
-
-        path.coords = fullPath
-        path.color = Color.BLUE
-        path.map = naverMap
-
-        return path
     }
 }

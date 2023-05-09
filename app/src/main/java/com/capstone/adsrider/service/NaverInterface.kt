@@ -6,15 +6,15 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface NaverInterface {
-    @GET("/dir/findbicycle")
+    @GET("dir/findbicycle")
     suspend fun getPath(
         @Query("start") start: String,
-        @Query("goal") goal: String
+        @Query("destination") destination: String
     ): NaverPath
 
-    @GET("/instantSearch?")
+    @GET("instantSearch?")
     suspend fun getPlaces(
         @Query("coords") coords: String,
-        @Query("query") query: String,
+        @Query("query") query: String
     ): NaverPlace
 }
