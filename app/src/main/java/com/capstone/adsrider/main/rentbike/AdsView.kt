@@ -3,12 +3,30 @@ package com.capstone.adsrider.main.rentbike
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.Button
+import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,15 +34,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.holix.android.bottomsheetdialog.compose.BottomSheetDialog
-import com.holix.android.bottomsheetdialog.compose.BottomSheetDialogProperties
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
+import com.holix.android.bottomsheetdialog.compose.BottomSheetDialog
+import com.holix.android.bottomsheetdialog.compose.BottomSheetDialogProperties
+import kotlinx.coroutines.delay
 
 @Composable
-fun AdsView(navController: NavHostController) {
-    val viewModel = AdsViewModel()
-    val ads by viewModel.ads.collectAsState()
+fun AdsView(navController: NavHostController, adsViewModel: AdsViewModel = viewModel()) {
+    val ads by adsViewModel.ads.collectAsState()
     var state by remember { mutableStateOf(false) }
     var index by remember { mutableStateOf<Int>(0) }
 
@@ -64,6 +83,10 @@ fun AdsView(navController: NavHostController) {
                     text = "${it.reward} ads"
                 )
             }
+            Divider(
+                modifier = Modifier.fillMaxWidth(),
+                thickness = 1.dp
+            )
         }
     }
     if (state) {
@@ -91,7 +114,7 @@ fun AdsView(navController: NavHostController) {
                     )
                     Text(
                         style = MaterialTheme.typography.body1,
-                        text = "광고정보: ${ads[index].subtitle}\n" + "지급 코인: ${ads[index].reward}"
+                        text = "광고정보: ${ads.get(index).subtitle}\n" + "지급 코인: ${ads[index].reward}"
                     )
                     Text(
                         style = MaterialTheme.typography.h6,
@@ -104,7 +127,9 @@ fun AdsView(navController: NavHostController) {
                         thickness = 1.dp
                     )
                     Image(
-                        painter = rememberAsyncImagePainter("https://adsrider.wo.tc/api/image/${ads[index].image_id}"),
+                        painter = rememberAsyncImagePainter(
+                            "https://adsrider.wo.tc/api/image/${ads[index].image_id}"
+                        ),
                         contentDescription = "Ads Design",
                         modifier = Modifier.height(200.dp)
                     )
@@ -126,6 +151,13 @@ fun AdsView(navController: NavHostController) {
 
 @Composable
 fun AdsExposure(imageId: Int) {
+    var time by remember { mutableStateOf(0) }
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(100L)
+            time += time
+        }
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -145,7 +177,8 @@ fun AdsExposure(imageId: Int) {
                 .background(Color.White)
                 .align(Alignment.BottomCenter)
         ) {
-            Column(modifier = Modifier.weight(1F),
+            Column(
+                modifier = Modifier.weight(1F),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
@@ -186,10 +219,11 @@ fun AdsExposure(imageId: Int) {
                 )
                 Text(
                     textAlign = TextAlign.Center,
-                    text = "01:10:02",
+                    text = "00:01:13",
                     fontSize = 20.sp
                 )
             }
         }
     }
 }
+//${time / 360}:${time / 60 % 60}:${time % 360}

@@ -1,9 +1,9 @@
 package com.capstone.adsrider.main.rentbike
 
 import android.os.Bundle
+import android.os.SystemClock.sleep
 import android.util.Log
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.camera.core.CameraSelector
@@ -11,26 +11,28 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
@@ -98,9 +100,10 @@ fun QRScanner(navController: NavHostController) {
     val lifecycleOwner = LocalLifecycleOwner.current
     var preview by remember { mutableStateOf<Preview?>(null) }
     val barCodeVal = remember { mutableStateOf("") }
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = Color.LightGray
+    var state by remember { mutableStateOf(false) }
+
+    Box(
+        modifier = Modifier.fillMaxSize()
     ) {
         AndroidView(
             factory = { AndroidViewContext ->
@@ -113,12 +116,7 @@ fun QRScanner(navController: NavHostController) {
                     implementationMode = PreviewView.ImplementationMode.COMPATIBLE
                 }
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    horizontal = 50.dp,
-                    vertical = 100.dp
-                ),
+            modifier = Modifier.fillMaxSize(),
             update = { previewView ->
                 val cameraSelector: CameraSelector = CameraSelector.Builder()
                     .requireLensFacing(CameraSelector.LENS_FACING_BACK)
@@ -136,7 +134,10 @@ fun QRScanner(navController: NavHostController) {
                         barcodes.forEach { barcode ->
                             barcode.rawValue?.let { barcodeValue ->
                                 barCodeVal.value = barcodeValue
-                                Toast.makeText(context, barcodeValue, Toast.LENGTH_SHORT).show()
+                                if (barcodeValue == "https://adsrider.wo.tc/") {
+                                    sleep(100)
+                                    state = true
+                                }
                             }
                         }
                     }
@@ -161,14 +162,39 @@ fun QRScanner(navController: NavHostController) {
                 }, ContextCompat.getMainExecutor(context))
             }
         )
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 20.dp)
+                .background(
+                    color = Color.Black.copy(alpha = 0.5F),
+                    shape = RoundedCornerShape(10.dp)
+                ),
+            text = "대여할 자전거의 QR을 찍으세요",
+            fontSize = 25.sp,
+            color = Color.White,
+            textAlign = TextAlign.Center
+        )
     }
-    Box(modifier = Modifier
-        .fillMaxHeight()
-        .padding(end = 0.dp), Alignment.BottomEnd) {
-        Button(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = { navController.navigate("path find") }) {
-            Text(text = "목적지 검색")
-        }
+    if(state) {
+        AlertDialog(
+            onDismissRequest = { state = false },
+            title = {
+                Text("자전거 대여")
+            },
+            text = {
+                Text("이 자전거를 대여하시겠습니까?")
+            },
+            confirmButton = {
+                Button(onClick = { navController.navigate("path find") }) {
+                    Text("대여")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { state = false }) {
+                    Text("취소")
+                }
+            }
+        )
     }
 }

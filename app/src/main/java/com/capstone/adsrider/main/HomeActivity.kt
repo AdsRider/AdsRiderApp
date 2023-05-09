@@ -65,7 +65,9 @@ fun AdsRider() {
     val navController = rememberNavController()
     Scaffold(
         topBar = { TopBar() },
-        bottomBar = { BottomNavigation(navController = navController) }
+        bottomBar = {
+            BottomNavigation(navController = navController)
+        }
     ) {
         Box(Modifier.padding(it)) {
             BottomNavigationGraph(navController = navController)
@@ -76,7 +78,8 @@ fun AdsRider() {
 @Composable
 fun TopBar() {
     Surface(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .shadow(10.dp),
         color = Color.White
     ) {
@@ -93,7 +96,7 @@ fun TopBar() {
                 modifier = Modifier.align(Alignment.Center)
             )
             IconButton(
-                onClick = { /*TODO*/ },
+                onClick = {  },
                 modifier = Modifier.align(Alignment.CenterEnd)
             ) {
                 Icon(
@@ -111,7 +114,7 @@ fun TopBar() {
 fun HomeScreen() {
     Box(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .height(600.dp)
             .background(MaterialTheme.colors.onSurface)
     ) {

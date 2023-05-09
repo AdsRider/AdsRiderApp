@@ -1,6 +1,7 @@
 package com.capstone.adsrider.main.buyticket
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Tab
@@ -26,7 +28,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -35,7 +36,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.capstone.adsrider.TicketTabItem
-import com.capstone.adsrider.ui.theme.AdsRiderTheme
 
 
 @Composable
@@ -53,7 +53,12 @@ fun BuyTicketScreen() {
 
 @Composable
 fun YearTicketScreen() {
-    Box(Modifier.fillMaxSize(), Alignment.Center) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Box(
             modifier = Modifier
                 .height(400.dp)
@@ -81,12 +86,24 @@ fun YearTicketScreen() {
                 )
             }
         }
+        Spacer(modifier = Modifier.height(30.dp))
+        Button(onClick = { /*TODO*/ }) {
+            Text(
+                text = "구매하기",
+                fontSize = 25.sp
+            )
+        }
     }
 }
 
 @Composable
 fun MonthTicketScreen() {
-    Box(Modifier.fillMaxSize(), Alignment.Center) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Box(
             modifier = Modifier
                 .height(400.dp)
@@ -114,41 +131,60 @@ fun MonthTicketScreen() {
                 )
             }
         }
+        Spacer(modifier = Modifier.height(20.dp))
+        Button(onClick = { /*TODO*/ }) {
+            Text(
+                text = "구매하기",
+                fontSize = 25.sp
+            )
+        }
     }
 }
 
 @Composable
 fun DayTicketScreen() {
-    Box(Modifier.fillMaxSize(), Alignment.Center) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Box(
             modifier = Modifier
                 .height(400.dp)
                 .width(300.dp)
                 .clip(RoundedCornerShape(50.dp))
                 .background(MaterialTheme.colors.secondary)
-            ) {
-                Column (
-                    Modifier.align(Alignment.TopCenter)
-                    ){
-                    Spacer(modifier = Modifier.height(30.dp))
-                    Text(
-                        text = "1일권",
-                        style = MaterialTheme.typography.h2,
-                        color = Color.White,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
-                    )
-                    Text(
-                        text = "\n1일 동안 2시간 이용 가능\n\n대여횟수 제한없이\n재 대여 가능\n\n결제금액      2,000원",
-                        color = Color.White,
-                        fontSize = 25.sp,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
-                    )
-                }
+        ) {
+            Column (
+                Modifier.align(Alignment.TopCenter)
+            ){
+                Spacer(modifier = Modifier.height(30.dp))
+                Text(
+                    text = "1일권",
+                    style = MaterialTheme.typography.h2,
+                    color = Color.White,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = "\n1일 동안 2시간 이용 가능\n\n대여횟수 제한없이\n재 대여 가능\n\n결제금액      2,000원",
+                    color = Color.White,
+                    fontSize = 25.sp,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
             }
         }
+        Spacer(modifier = Modifier.height(20.dp))
+        Button(onClick = { /*TODO*/ }) {
+            Text(
+                text = "구매하기",
+                fontSize = 25.sp
+            )
+        }
     }
+}
 
 @Composable
 fun TicketNavigationGraph(navController: NavHostController) {
@@ -203,13 +239,5 @@ fun TicketNavigation(navController: NavController) {
                 }
             )
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun preview() {
-    AdsRiderTheme {
-        YearTicketScreen()
     }
 }

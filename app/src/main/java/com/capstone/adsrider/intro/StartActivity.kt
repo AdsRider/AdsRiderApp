@@ -5,8 +5,18 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -21,8 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.lifecycleScope
 import com.capstone.adsrider.HomeActivity
-import com.google.firebase.auth.FirebaseAuth
 import com.capstone.adsrider.R
+import com.google.firebase.auth.FirebaseAuth
 
 class StartActivity : ComponentActivity() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -47,8 +57,14 @@ class StartActivity : ComponentActivity() {
             }
         }
         setContent {
-            Surface(color = Color.White) {
-                Text(text = "로그인 확인중", fontSize = 30.sp)
+            Row(
+                modifier = Modifier
+                    .fillMaxSize(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                CircularProgressIndicator()
+                Text(text = "   로그인 확인중", fontSize = 30.sp)
             }
         }
     }
@@ -58,31 +74,27 @@ class StartActivity : ComponentActivity() {
 fun LoginScreen(content: () -> Unit) {
     Surface(color = Color.White) {
         Column(
-            modifier = Modifier.fillMaxSize().padding(start = 15.dp, end = 15.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(start = 15.dp, end = 15.dp),
             verticalArrangement = Arrangement.Center
 
         ) {
-            Greeting(text = "시작하시겠습니까?")
+            Image(
+                painter = painterResource(id = R.drawable.adsrider_logo),
+                contentDescription = "App Icon"
+            )
             SignInGoogleButton { content() }
         }
     }
 }
 
 @Composable
-fun Greeting(text: String) {
-    Text(
-        text = text,
-        style = MaterialTheme.typography.body2,
-        color = Color.Gray,
-        modifier = Modifier.padding(bottom = 12.dp)
-    )
-}
-
-@Composable
 fun SignInGoogleButton(onClick: () -> Unit) {
     Surface(
-        modifier = Modifier.clickable(onClick = onClick).fillMaxWidth(),
-        // border = BorderStroke(width = 1.dp, color = Color.LightGray),
+        modifier = Modifier
+            .clickable(onClick = onClick)
+            .fillMaxWidth(),
         color = MaterialTheme.colors.surface,
         shape = MaterialTheme.shapes.small,
         elevation = 10.dp
@@ -105,7 +117,7 @@ fun SignInGoogleButton(onClick: () -> Unit) {
             )
             Spacer(modifier = Modifier.width(20.dp))
             Text(
-                text = "Sign in with Google",
+                text = "Google 계정으로 로그인",
                 style = MaterialTheme.typography.overline,
                 color = Color.Gray,
                 fontSize = 17.sp,

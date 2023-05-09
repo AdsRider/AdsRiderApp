@@ -1,16 +1,9 @@
 package com.capstone.adsrider.main.rentbike
 
-import android.util.Log
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.capstone.adsrider.model.Ad
 import com.capstone.adsrider.service.AdsRiderService
-import com.naver.maps.map.NaverMap
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
