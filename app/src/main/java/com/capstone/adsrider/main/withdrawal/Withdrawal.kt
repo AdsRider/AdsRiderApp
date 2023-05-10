@@ -15,7 +15,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.naver.maps.map.CameraUpdate
 
 val tableData = listOf(Pair("원화", "x 원"), Pair("ADS", "y 코인"))
 
@@ -24,8 +23,7 @@ fun WithdrawalScreen() {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
-    )
-    {
+    ) {
         val kinds = listOf("출금", "입금")
         var count by remember { mutableStateOf("") }
         var address by remember { mutableStateOf("") }
@@ -51,7 +49,8 @@ fun WithdrawalScreen() {
         }
         KindRadioGroup(
             mItems = kinds,
-            selected, setSelected
+            selected,
+            setSelected
         )
 
         if (selected == "출금") {
@@ -62,7 +61,7 @@ fun WithdrawalScreen() {
                 TextField(
                     modifier = Modifier.padding(start = 2.dp),
                     value = count,
-                    onValueChange = { count = it },
+                    onValueChange = { count = it }
                 )
             }
             Row(
@@ -72,7 +71,7 @@ fun WithdrawalScreen() {
                 TextField(
                     modifier = Modifier.padding(start = 2.dp),
                     value = address,
-                    onValueChange = { address = it },
+                    onValueChange = { address = it }
                 )
             }
             Button(onClick = {
@@ -104,7 +103,7 @@ fun RowScope.TableCell(
 fun KindRadioGroup(
     mItems: List<String>,
     selected: String,
-    setSelected: (selected: String) -> Unit,
+    setSelected: (selected: String) -> Unit
 ) {
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         Row {

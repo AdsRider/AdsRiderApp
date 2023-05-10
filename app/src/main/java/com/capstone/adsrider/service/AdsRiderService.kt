@@ -18,30 +18,34 @@ class AdsRiderService {
     suspend fun login(email: String, password: String) = runCatching {
         AdsRiderObject.retrofitService.login(
             email,
-            password,
+            password
         )
     }.getOrNull()
 
     suspend fun signin(email: String, password: String) = runCatching {
         AdsRiderObject.retrofitService.signin(
             email,
-            password,
+            password
         )
     }.getOrNull()
 
     suspend fun logout(email: String, password: String) = runCatching {
         AdsRiderObject.retrofitService.logout(
             email,
-            password,
+            password
         )
     }.getOrNull()
 
     suspend fun getBalance(email: String, password: String) = runCatching {
         AdsRiderObject.retrofitService.getBalance(
             email,
-            password,
+            password
         )
     }.getOrNull()
 
     suspend fun getAdsList() = AdsRiderObject.retrofitService.getAdsList()
+
+    suspend fun buyTicket(day: Int) = runCatching {
+        AdsRiderObject.retrofitService.buyTicket(day)
+    }.getOrNull()
 }

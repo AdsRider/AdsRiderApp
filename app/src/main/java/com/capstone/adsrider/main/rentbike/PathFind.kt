@@ -134,6 +134,7 @@ fun PathFindScreen(navController: NavHostController, pathFindViewModel: PathFind
             }
         }
     }
+
     Box(modifier = Modifier.fillMaxHeight(), Alignment.BottomEnd) {
         Button(
             modifier = Modifier.fillMaxWidth(),
