@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.capstone.adsrider">
+    package="com.capstone.adsrider" >
 
     <uses-feature android:name="android.hardware.camera" />
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -18,7 +18,18 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.AdsRider"
-        tools:targetApi="31">
+        android:colorMode="wideColorGamut"
+        tools:targetApi="31" >
+        <activity
+            android:name=".intro.UserLogin"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.AdsRider" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".main.rentbike.PathFind"
             android:exported="false"
@@ -34,21 +45,6 @@
             android:exported="false"
             android:label="@string/title_rent_bike"
             android:theme="@style/Theme.AdsRider" />
-        <activity
-            android:name=".intro.LoginActivity"
-            android:exported="false"
-            android:label="@string/title_activity_login"
-            android:theme="@style/Theme.AdsRider" />
-        <activity
-            android:name=".intro.StartActivity"
-            android:exported="true"
-            android:label="@string/title_activity_start"
-            android:theme="@style/Theme.AdsRider">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
 
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"

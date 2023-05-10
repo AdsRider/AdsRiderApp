@@ -41,7 +41,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.capstone.adsrider.ui.theme.AdsRiderTheme
+import com.capstone.adsrider.main.pathfind.PathFindScreen
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.common.util.concurrent.ListenableFuture
 import java.util.concurrent.ExecutorService
@@ -52,9 +52,7 @@ class RentBike : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            AdsRiderTheme {
-                RentBikeScreen()
-            }
+            RentBikeScreen()
         }
     }
 }

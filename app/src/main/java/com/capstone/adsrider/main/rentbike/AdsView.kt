@@ -21,7 +21,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,13 +38,12 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.holix.android.bottomsheetdialog.compose.BottomSheetDialog
 import com.holix.android.bottomsheetdialog.compose.BottomSheetDialogProperties
-import kotlinx.coroutines.delay
 
 @Composable
 fun AdsView(navController: NavHostController, adsViewModel: AdsViewModel = viewModel()) {
     val ads by adsViewModel.ads.collectAsState()
     var state by remember { mutableStateOf(false) }
-    var index by remember { mutableStateOf<Int>(0) }
+    var index by remember { mutableStateOf(0) }
 
     LazyColumn(
         modifier = Modifier
@@ -114,7 +112,7 @@ fun AdsView(navController: NavHostController, adsViewModel: AdsViewModel = viewM
                     )
                     Text(
                         style = MaterialTheme.typography.body1,
-                        text = "광고정보: ${ads.get(index).subtitle}\n" + "지급 코인: ${ads[index].reward}"
+                        text = "광고정보: ${ads[index].subtitle}\n" + "지급 코인: ${ads[index].reward}"
                     )
                     Text(
                         style = MaterialTheme.typography.h6,
@@ -151,13 +149,6 @@ fun AdsView(navController: NavHostController, adsViewModel: AdsViewModel = viewM
 
 @Composable
 fun AdsExposure(imageId: Int) {
-    var time by remember { mutableStateOf(0) }
-    LaunchedEffect(Unit) {
-        while (true) {
-            delay(100L)
-            time += time
-        }
-    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -226,4 +217,3 @@ fun AdsExposure(imageId: Int) {
         }
     }
 }
-//${time / 360}:${time / 60 % 60}:${time % 360}

@@ -4,6 +4,7 @@ import android.Manifest
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -12,8 +13,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,7 +27,6 @@ import androidx.navigation.compose.rememberNavController
 import com.capstone.adsrider.main.buyticket.BuyTicketScreen
 import com.capstone.adsrider.main.rentbike.RentBikeScreen
 import com.capstone.adsrider.main.swapcoin.SwapCoinScreen
-import com.capstone.adsrider.ui.theme.AdsRiderTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 
@@ -34,14 +34,10 @@ class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            AdsRiderTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    AdsRider()
-                }
+            Surface(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                AdsRider()
             }
         }
     }
@@ -88,13 +84,15 @@ fun TopBar() {
                 .height(75.dp)
                 .padding(horizontal = 16.dp)
         ) {
-            Text(
-                text = "Ads Rider",
-                color = Color.Blue,
-                fontSize = 30.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.align(Alignment.Center)
-            )
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    modifier = Modifier.height(50.dp),
+                    painter = painterResource(R.drawable.adsrider_name),
+                    contentDescription = "")
+            }
             IconButton(
                 onClick = {  },
                 modifier = Modifier.align(Alignment.CenterEnd)
@@ -103,7 +101,7 @@ fun TopBar() {
                     painter = painterResource(id = R.drawable.user_info),
                     contentDescription = "USER INFO",
                     modifier = Modifier.size(40.dp),
-                    tint = Color.Blue
+                    tint = colorResource(R.color.dark_blue)
                 )
             }
         }

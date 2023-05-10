@@ -131,7 +131,7 @@ fun MonthTicketScreen() {
                 )
             }
         }
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(30.dp))
         Button(onClick = { /*TODO*/ }) {
             Text(
                 text = "구매하기",
@@ -176,7 +176,7 @@ fun DayTicketScreen() {
                 )
             }
         }
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(30.dp))
         Button(onClick = { /*TODO*/ }) {
             Text(
                 text = "구매하기",

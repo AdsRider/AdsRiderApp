@@ -4,6 +4,7 @@ import com.capstone.adsrider.model.Ad
 import com.capstone.adsrider.model.Balance
 import com.capstone.adsrider.model.User
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface AdsRiderInterface {
@@ -13,13 +14,13 @@ interface AdsRiderInterface {
         @Query("query") query: String,
     ): Balance
 
-    @GET("user/signin")
+    @POST("user/signin")
     suspend fun signin(
         @Query("email") email: String,
         @Query("password") password: String,
     ): User
 
-    @GET("user/login")
+    @POST("user/login")
     suspend fun login(
         @Query("email") email: String,
         @Query("password") password: String,

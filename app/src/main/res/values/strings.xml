@@ -21,4 +21,5 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_path_find">PathFind</string>
     <string name="title_activity_ad_selection">AdSelection</string>
+    <string name="title_activity_user_login">UserLogin</string>
 </resources>

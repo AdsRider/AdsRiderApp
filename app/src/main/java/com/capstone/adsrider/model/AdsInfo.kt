@@ -1,8 +1,5 @@
 package com.capstone.adsrider.model
 
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-
 data class Ad(
     val id: Int,
     val title: String,
