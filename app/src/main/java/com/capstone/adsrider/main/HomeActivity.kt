@@ -15,7 +15,9 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -23,6 +25,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.capstone.adsrider.account.AccountScreen
+import com.capstone.adsrider.main.account.AccountViewModel
 import com.capstone.adsrider.main.buyticket.BuyTicketScreen
 import com.capstone.adsrider.main.rentbike.RentBikeScreen
 import com.capstone.adsrider.main.swapcoin.SwapCoinScreen
@@ -48,13 +51,14 @@ sealed class BottomNavItem(val icon: Int, val screenRoute: String) {
     object SwapCoin : BottomNavItem(R.drawable.swap_coin, "SWAP COIN")
     object ButTicket : BottomNavItem(R.drawable.buy_ticket, "BUY TICKET")
     object Withdrawal : BottomNavItem(R.drawable.withdrawal, "WITHDRAWAL")
+    object MyPage : BottomNavItem(R.drawable.user_info, "My Page")
 }
 
 @Composable
 fun AdsRider() {
     val navController = rememberNavController()
     Scaffold(
-        topBar = { TopBar() },
+        topBar = { TopBar(navController = navController) },
         bottomBar = {
             BottomNavigation(navController = navController)
         }
@@ -66,7 +70,7 @@ fun AdsRider() {
 }
 
 @Composable
-fun TopBar() {
+fun TopBar(navController: NavController) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -88,12 +92,12 @@ fun TopBar() {
                     contentDescription = "")
             }
             IconButton(
-                onClick = {  },
+                onClick = { navController.navigate("My Page") },
                 modifier = Modifier.align(Alignment.CenterEnd)
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.user_info),
-                    contentDescription = "USER INFO",
+                    painter = painterResource(id = BottomNavItem.MyPage.icon),
+                    contentDescription = "My Page",
                     modifier = Modifier.size(40.dp),
                     tint = colorResource(R.color.dark_blue)
                 )
@@ -115,6 +119,22 @@ fun HomeScreen() {
 }
 
 @Composable
+fun MyPage(accountViewModel: AccountViewModel = viewModel()) {
+    val balance = accountViewModel.balance.collectAsState().value
+    Surface(
+        modifier = Modifier.fillMaxSize()
+        ) {
+        accountViewModel.getBalance()
+        Column() {
+            balance.forEach {
+                Text(text = "잔액 : ${it.amount} ${it.type}\n")
+            }
+        }
+
+    }
+}
+
+@Composable
 fun BottomNavigationGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
@@ -125,6 +145,7 @@ fun BottomNavigationGraph(navController: NavHostController) {
         composable(BottomNavItem.ButTicket.screenRoute) { BuyTicketScreen() }
         composable(BottomNavItem.Withdrawal.screenRoute) { AccountScreen() }
         composable(BottomNavItem.SwapCoin.screenRoute) { SwapCoinScreen() }
+        composable(BottomNavItem.MyPage.screenRoute) { MyPage() }
     }
 }
 
@@ -171,4 +192,10 @@ fun BottomNavigation(navController: NavController) {
             )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun preview() {
+    MyPage()
 }
