@@ -22,7 +22,7 @@
         android:colorMode="wideColorGamut"
         tools:targetApi="31" >
         <activity
-            android:name=".intro.UserLogin"
+            android:name=".intro.LoginActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.AdsRider" >

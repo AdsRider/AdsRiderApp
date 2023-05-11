@@ -21,11 +21,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,9 +39,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.capstone.adsrider.AdsRider
 import com.capstone.adsrider.R
-import com.capstone.adsrider.model.User
 
-class UserLogin : ComponentActivity() {
+class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -82,11 +77,19 @@ fun LoginGraph() {
 }
 
 @Composable
-fun LoginView(navController: NavController, userLoginViewModel: UserLoginViewModel = viewModel()) {
-    var user by remember { mutableStateOf<User?>(null) }
+fun LoginView(navController: NavController, loginViewModel: LoginViewModel = viewModel()) {
+    var loginState = loginViewModel.loginState.collectAsState().value
     var email by remember { mutableStateOf("") }
     var passwd by remember { mutableStateOf("") }
     val context = LocalContext.current
+
+    if (loginState == "success") {
+        loginViewModel.setLoginState("")
+        navController.navigate("HOME")
+    } else if (loginState != "") {
+        Toast.makeText(context, loginState, Toast.LENGTH_SHORT).show()
+        loginViewModel.setLoginState("")
+    }
 
     Column(
         modifier = Modifier
@@ -127,17 +130,7 @@ fun LoginView(navController: NavController, userLoginViewModel: UserLoginViewMod
                 backgroundColor = colorResource(R.color.dark_blue)
             ),
             onClick = {
-                try {
-                    if(!isEmpty(email) && !isEmpty(passwd)) {
-                        userLoginViewModel.login(email, passwd)
-                        navController.navigate("HOME")
-                    }
-                    else{
-                        Toast.makeText(context, "아이디와 비밀번호를 입력하세요", Toast.LENGTH_SHORT).show()
-                    }
-                } catch (e: Exception) {
-                    Toast.makeText(context, e.localizedMessage, Toast.LENGTH_SHORT).show()
-                }
+                loginViewModel.login(email, passwd)
             }
         ) {
             Text(
@@ -158,10 +151,19 @@ fun LoginView(navController: NavController, userLoginViewModel: UserLoginViewMod
 }
 
 @Composable
-fun SignInView(navController: NavController, userLoginViewModel: UserLoginViewModel = viewModel()) {
+fun SignInView(navController: NavController, loginViewModel: LoginViewModel = viewModel()) {
+    var signInState = loginViewModel.signInState.collectAsState().value
     var email by remember { mutableStateOf("") }
     var passwd by remember { mutableStateOf("") }
     val context = LocalContext.current
+
+    if (signInState == "success") {
+        loginViewModel.setSignInState("")
+        navController.navigate("HOME")
+    } else if (signInState != "") {
+        Toast.makeText(context, signInState, Toast.LENGTH_SHORT).show()
+        loginViewModel.setSignInState("")
+    }
 
     Column(
         modifier = Modifier
@@ -179,7 +181,7 @@ fun SignInView(navController: NavController, userLoginViewModel: UserLoginViewMo
         OutlinedTextField(
             value = email,
             placeholder = { Text(text = "이메일", color = Color.Gray) },
-            onValueChange = { email = it},
+            onValueChange = { email = it },
             modifier = Modifier.fillMaxWidth(),
             leadingIcon = {
                 Icon(painter = painterResource(id = R.drawable.user_info), contentDescription = "email")
@@ -187,7 +189,7 @@ fun SignInView(navController: NavController, userLoginViewModel: UserLoginViewMo
         )
         Spacer(modifier = Modifier.height(20.dp))
         OutlinedTextField(
-            value = "",
+            value = passwd,
             placeholder = { Text(text = "비밀번호", color = Color.Gray) },
             onValueChange = { passwd = it },
             modifier = Modifier.fillMaxWidth(),
@@ -206,11 +208,10 @@ fun SignInView(navController: NavController, userLoginViewModel: UserLoginViewMo
             ),
             onClick = {
                 try {
-                    if(!isEmpty(email) && !isEmpty(passwd)) {
-                        userLoginViewModel.signin(email, passwd)
+                    if (!isEmpty(email) && !isEmpty(passwd)) {
+                        loginViewModel.signin(email, passwd)
                         navController.navigate("LIGIN")
-                    }
-                    else{
+                    } else {
                         Toast.makeText(context, "아이디와 비밀번호를 입력하세요", Toast.LENGTH_SHORT).show()
                     }
                 } catch (e: Exception) {
