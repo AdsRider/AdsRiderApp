@@ -1,6 +1,7 @@
 package com.capstone.adsrider.service
 
 import com.capstone.adsrider.model.LoginBody
+import com.capstone.adsrider.model.WithdrawalBody
 import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -41,14 +42,15 @@ class AdsRiderService {
         )
     }.getOrNull()
 
-    suspend fun getBalance(email: String, password: String) = runCatching {
-        AdsRiderObject.retrofitService.getBalance(
-            email,
-            password
-        )
-    }.getOrNull()
+    suspend fun getBalance() = AdsRiderObject.retrofitService.getBalance()
+
+    suspend fun getHistory() = AdsRiderObject.retrofitService.getHistory()
 
     suspend fun getAdsList() = AdsRiderObject.retrofitService.getAdsList()
+
+    suspend fun withdrawal(to: String, amount: String) = AdsRiderObject.retrofitService.withdrawal(
+        WithdrawalBody(to, amount)
+    )
 
     suspend fun buyTicket(day: Int) = runCatching {
         AdsRiderObject.retrofitService.buyTicket(day)

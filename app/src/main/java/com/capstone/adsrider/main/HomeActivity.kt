@@ -24,6 +24,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.capstone.adsrider.account.AccountScreen
 import com.capstone.adsrider.main.buyticket.BuyTicketScreen
 import com.capstone.adsrider.main.rentbike.RentBikeScreen
 import com.capstone.adsrider.main.swapcoin.SwapCoinScreen
@@ -49,11 +50,6 @@ sealed class BottomNavItem(val icon: Int, val screenRoute: String) {
     object SwapCoin : BottomNavItem(R.drawable.swap_coin, "SWAP COIN")
     object ButTicket : BottomNavItem(R.drawable.buy_ticket, "BUY TICKET")
     object Withdrawal : BottomNavItem(R.drawable.withdrawal, "WITHDRAWAL")
-}
-sealed class TicketTabItem(val term: String, val screenRoute: String) {
-    object Day : TicketTabItem("1일권", "DAY")
-    object Month : TicketTabItem("1달권", "MONTH")
-    object Year : TicketTabItem("1년권", "YEAR")
 }
 
 @Composable
@@ -136,7 +132,7 @@ fun BottomNavigationGraph(navController: NavHostController) {
         composable(BottomNavItem.Home.screenRoute) { HomeScreen() }
         composable(BottomNavItem.RentBike.screenRoute) { RentBikeScreen() }
         composable(BottomNavItem.ButTicket.screenRoute) { BuyTicketScreen() }
-        composable(BottomNavItem.Withdrawal.screenRoute) { WithdrawalScreen() }
+        composable(BottomNavItem.Withdrawal.screenRoute) { AccountScreen() }
         composable(BottomNavItem.SwapCoin.screenRoute) { SwapCoinScreen() }
     }
 }

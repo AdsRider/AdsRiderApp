@@ -34,7 +34,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.capstone.adsrider.TicketTabItem
 
 @Composable
 fun BuyTicketScreen(buyTicketViewModel: BuyTicketViewModel = viewModel()) {
@@ -254,4 +253,10 @@ fun BuyTicketScreen(buyTicketViewModel: BuyTicketViewModel = viewModel()) {
             TicketNavigationGraph(navController = navController)
         }
     }
+}
+
+sealed class TicketTabItem(val term: String, val screenRoute: String) {
+    object Day : TicketTabItem("1일권", "DAY")
+    object Month : TicketTabItem("1달권", "MONTH")
+    object Year : TicketTabItem("1년권", "YEAR")
 }

@@ -1,9 +1,6 @@
 package com.capstone.adsrider.service
 
-import com.capstone.adsrider.model.Ad
-import com.capstone.adsrider.model.Balance
-import com.capstone.adsrider.model.LoginBody
-import com.capstone.adsrider.model.User
+import com.capstone.adsrider.model.*
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -11,10 +8,15 @@ import retrofit2.http.Query
 
 interface AdsRiderInterface {
     @GET("user/balance")
-    suspend fun getBalance(
-        @Query("coords") coords: String,
-        @Query("query") query: String
-    ): Balance
+    suspend fun getBalance(): List<Balance>
+
+    @GET("user/dw/history")
+    suspend fun getHistory(): List<History>
+
+    @POST("user/withdrawal")
+    suspend fun withdrawal(
+        @Body withdrawalBody: WithdrawalBody
+    ): String
 
     @GET("user/me")
     suspend fun whoami(): User
