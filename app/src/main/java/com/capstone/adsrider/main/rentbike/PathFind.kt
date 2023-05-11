@@ -18,6 +18,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.capstone.adsrider.R
 import com.capstone.adsrider.main.rentbike.PathFindViewModel
+import com.capstone.adsrider.model.Riding
+import com.capstone.adsrider.utility.App
+import com.capstone.adsrider.utility.RidingSharedPreference
+import com.capstone.adsrider.utility.UserSharedPreference
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.compose.*
@@ -139,7 +143,17 @@ fun PathFindScreen(navController: NavHostController, pathFindViewModel: PathFind
     Box(modifier = Modifier.fillMaxHeight(), Alignment.BottomEnd) {
         Button(
             modifier = Modifier.fillMaxWidth(),
-            onClick = { navController.navigate("ad select") }
+            onClick = {
+                val ridingData = Riding(
+                    ads_id = "",
+                    distance = 0,
+                    path = path.toString(),
+                    start_at = 0,
+                    completed_at = 0,
+                )
+                RidingSharedPreference(App.context()).setRidingPrefs(ridingData)
+                navController.navigate("ad select")
+            }
         ) {
             Text(text = "광고 선택")
         }

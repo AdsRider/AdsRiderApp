@@ -18,6 +18,11 @@ interface AdsRiderInterface {
         @Body withdrawalBody: WithdrawalBody
     ): String
 
+    @POST("user/ridingcomplete")
+    suspend fun ridingComplete(
+        @Body riding: Riding
+    ): String
+
     @GET("user/me")
     suspend fun whoami(): User
 

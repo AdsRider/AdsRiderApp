@@ -40,6 +40,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.capstone.adsrider.R
+import com.capstone.adsrider.utility.App
+import com.capstone.adsrider.utility.RidingSharedPreference
 import com.holix.android.bottomsheetdialog.compose.BottomSheetDialog
 import com.holix.android.bottomsheetdialog.compose.BottomSheetDialogProperties
 
@@ -77,7 +79,8 @@ fun AdsView(navController: NavHostController, adsViewModel: AdsViewModel = viewM
                 Image(
                     modifier = Modifier.width(100.dp),
                     painter = rememberAsyncImagePainter("https://adsrider.wo.tc/api/image/${it.image_id}"),
-                    contentDescription = "Ad image")
+                    contentDescription = "Ad image"
+                )
                 Text(
                     style = MaterialTheme.typography.h5,
                     color = colorResource(R.color.light_blue),
@@ -134,11 +137,12 @@ fun AdsView(navController: NavHostController, adsViewModel: AdsViewModel = viewM
                         color = Color.LightGray,
                         thickness = 1.dp
                     )
-                    Box(modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp),
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp),
                         contentAlignment = Alignment.Center
-                    ){
+                    ) {
                         Image(
                             painter = rememberAsyncImagePainter(
                                 "https://adsrider.wo.tc/api/image/${ads[index].image_id}"
@@ -156,6 +160,10 @@ fun AdsView(navController: NavHostController, adsViewModel: AdsViewModel = viewM
                             backgroundColor = colorResource(R.color.dark_blue)
                         ),
                         onClick = {
+                            val ridingData = RidingSharedPreference(App.context()).getRidingPrefs()
+                            ridingData.ads_id = ads[index].id.toString()
+                            ridingData.start_at = System.currentTimeMillis()
+                            RidingSharedPreference(App.context()).setRidingPrefs(ridingData)
                             navController.navigate("ad exposure/${ads[index].image_id}")
                         }
                     ) {
@@ -172,7 +180,7 @@ fun AdsView(navController: NavHostController, adsViewModel: AdsViewModel = viewM
 }
 
 @Composable
-fun AdsExposure(imageId: Int) {
+fun AdsExposure(imageId: Int, adsExposureViewModel: AdsExposureViewModel = viewModel()) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -181,7 +189,7 @@ fun AdsExposure(imageId: Int) {
             .offset(y = (-30).dp)
     ) {
         Image(
-            painter = rememberAsyncImagePainter("https://adsrider.wo.tc/api/image/${imageId}}"),
+            painter = rememberAsyncImagePainter("https://adsrider.wo.tc/api/image/$imageId}"),
             contentDescription = "Ads Design",
             modifier = Modifier
                 .height(500.dp)
@@ -199,7 +207,7 @@ fun AdsExposure(imageId: Int) {
                 Text(
                     color = Color.LightGray,
                     textAlign = TextAlign.Center,
-                    text = "주행속도",
+                    text = "주행속도"
                 )
                 Text(
                     textAlign = TextAlign.Center,
