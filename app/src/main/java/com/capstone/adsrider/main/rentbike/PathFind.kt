@@ -118,6 +118,7 @@ fun PathFindScreen(navController: NavHostController, pathFindViewModel: PathFind
                 TextField(
                     modifier = Modifier.height(60.dp),
                     value = desWord,
+                    singleLine = true,
                     onValueChange = { desWord = it }
                 )
                 Button(

@@ -15,9 +15,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -109,17 +107,10 @@ fun HomeScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .height(600.dp)
-            .background(MaterialTheme.colors.onSurface)
+            .background(colorResource(id = R.color.light_blue)),
+        contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = "메인 페이지",
-            fontSize = 50.sp,
-            style = MaterialTheme.typography.h1,
-            textAlign = TextAlign.Center,
-            color = Color.White,
-            modifier = Modifier.align(Alignment.Center)
-        )
+        Image(painter = painterResource(id = R.drawable.adsrider_logo), contentDescription = "logo")
     }
 }
 
