@@ -44,7 +44,12 @@ class AccountViewModel : ViewModel() {
 
     fun withdrawal(to: String, amount: String) {
         viewModelScope.launch {
-            _hash.value = adsRiderService.withdrawal(to, amount)!!
+            try {
+                _hash.value = adsRiderService.withdrawal(to, amount)!!
+                Log.d("withdrawal_success", _hash.value)
+            } catch (e: HttpException) {
+                Log.d("withdrawal_err", e.toString())
+            }
         }
     }
 }

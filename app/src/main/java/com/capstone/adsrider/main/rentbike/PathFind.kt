@@ -1,5 +1,8 @@
 package com.capstone.adsrider.main.pathfind
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.location.Location
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -11,26 +14,54 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.capstone.adsrider.R
 import com.capstone.adsrider.main.rentbike.PathFindViewModel
 import com.capstone.adsrider.model.Riding
 import com.capstone.adsrider.utility.App
+import com.capstone.adsrider.utility.CalDistance
 import com.capstone.adsrider.utility.RidingSharedPreference
-import com.capstone.adsrider.utility.UserSharedPreference
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.gson.Gson
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.compose.*
 import com.naver.maps.map.overlay.OverlayImage
 
+private lateinit var fusedLocationClient: FusedLocationProviderClient
+
 @OptIn(ExperimentalNaverMapApi::class)
 @Composable
 fun PathFindScreen(navController: NavHostController, pathFindViewModel: PathFindViewModel = viewModel()) {
-    val startPosition = LatLng(37.3400333, 126.7335056)
+    var startPosition by remember { mutableStateOf(LatLng(37.3400333, 126.7335056)) }
+    // 위치 권한 요청 및 현재 위치 구하기
+    val context = LocalContext.current
+
+    if (ActivityCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+    ) {
+        // TODO
+        // 나중에 기재 예정
+    } else {
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location: Location ->
+                startPosition = LatLng(location.latitude, location.longitude)
+                Log.d("pos", startPosition.toString())
+            }
+    }
     val path = pathFindViewModel.path.collectAsState().value
     val places = pathFindViewModel.places.collectAsState().value
     val cameraPositionState: CameraPositionState = rememberCameraPositionState {
@@ -144,12 +175,23 @@ fun PathFindScreen(navController: NavHostController, pathFindViewModel: PathFind
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
+                var gson = Gson()
+                var calDistance = CalDistance()
+                var distance = 0.0
+                lateinit var before: LatLng
+                path.forEachIndexed{ index, item ->
+                    if (index != 0) {
+                        distance += calDistance.getDistance(before, path[index])
+                    }
+                    before = path[index]
+                }
+
                 val ridingData = Riding(
                     ads_id = "",
-                    distance = 0,
-                    path = path.toString(),
+                    distance = distance.toLong(),
+                    path = gson.toJson(path),
                     start_at = 0,
-                    completed_at = 0,
+                    completed_at = 0
                 )
                 RidingSharedPreference(App.context()).setRidingPrefs(ridingData)
                 navController.navigate("ad select")

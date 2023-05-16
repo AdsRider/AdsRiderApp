@@ -1,5 +1,6 @@
 package com.capstone.adsrider.main.rentbike
 
+import android.Manifest
 import android.os.Bundle
 import android.os.SystemClock.sleep
 import android.util.Log
@@ -42,7 +43,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.capstone.adsrider.main.pathfind.PathFindScreen
+import com.capstone.adsrider.utility.QRcodeAnalyser
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import com.google.common.util.concurrent.ListenableFuture
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -62,13 +66,14 @@ fun RentBikeScreen() {
     val navController = rememberNavController()
     Scaffold {
         Box(Modifier.padding(it)) {
-            PathFindNavigationGraph(navController = navController)
+            RentBikeNavigationGraph(navController = navController)
         }
     }
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun PathFindNavigationGraph(navController: NavHostController) {
+fun RentBikeNavigationGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
         startDestination = "rent bike"
@@ -96,6 +101,7 @@ fun PathFindNavigationGraph(navController: NavHostController) {
     }
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun QRScanner(navController: NavHostController) {
     val context = LocalContext.current
@@ -103,6 +109,9 @@ fun QRScanner(navController: NavHostController) {
     var preview by remember { mutableStateOf<Preview?>(null) }
     val barCodeVal = remember { mutableStateOf("") }
     var state by remember { mutableStateOf(false) }
+
+    val locationPermissionState = rememberPermissionState(permission = Manifest.permission.ACCESS_FINE_LOCATION)
+    val locationPermissionState2 = rememberPermissionState(permission = Manifest.permission.ACCESS_COARSE_LOCATION)
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -178,7 +187,14 @@ fun QRScanner(navController: NavHostController) {
             textAlign = TextAlign.Center
         )
 
-        Button(onClick = { navController.navigate("path find") }) {
+        Button(onClick = {
+            navController.navigate("path find") {
+                if (!locationPermissionState.status.isGranted) {
+                    locationPermissionState.launchPermissionRequest()
+                    locationPermissionState2.launchPermissionRequest()
+                }
+            }
+        }) {
             Text("대여")
         }
     }

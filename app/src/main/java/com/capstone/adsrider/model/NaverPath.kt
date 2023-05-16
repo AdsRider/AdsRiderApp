@@ -4,21 +4,21 @@ package com.capstone.adsrider.model
 
 import java.io.Serializable
 
-data class NaverPath (
+data class NaverPath(
     val routes: List<Route>
 ) : Serializable {
-    data class Route (
+    data class Route(
         val summary: RouteSummary,
         val route_fullpath: String,
         val legs: List<Leg>
     )
 
-    data class Leg (
+    data class Leg(
         val summary: LegSummary,
         val steps: List<Step>
     )
 
-    data class Step (
+    data class Step(
         val path: String,
         val summary: StepSummary,
         val road: Road,
@@ -27,7 +27,7 @@ data class NaverPath (
         val traffic: Traffic? = null
     )
 
-    data class Guide (
+    data class Guide(
         val turn_point: String,
         val direction: String,
         val turn: Long,
@@ -37,14 +37,14 @@ data class NaverPath (
         val instructions: String
     )
 
-    data class Panorama (
+    data class Panorama(
         val id: String,
         val location: String,
         val pan: Long,
         val tilt: Long
     )
 
-    data class Road (
+    data class Road(
         val road_type: Long,
         val road_name: String,
         val road_no: Long,
@@ -52,30 +52,30 @@ data class NaverPath (
         val road_structure: Long
     )
 
-    data class StepSummary (
+    data class StepSummary(
         val distance: Long,
         val duration: Long,
         val step_summary: String
     )
 
-    data class Traffic (
+    data class Traffic(
         val congestion: Long,
         val speed: Long
     )
 
-    data class LegSummary (
+    data class LegSummary(
         val distance: Long,
         val duration: Long,
         val start: End,
         val end: End
     )
 
-    data class End (
+    data class End(
         val address: String,
         val location: String
     )
 
-    data class RouteSummary (
+    data class RouteSummary(
         val distance: Long,
         val duration: Long,
         val bounds: Bounds,
@@ -93,17 +93,17 @@ data class NaverPath (
         val coord_type: String
     )
 
-    data class Bounds (
+    data class Bounds(
         val left_top: String,
         val right_bottom: String
     )
 
-    data class FacilityCount (
+    data class FacilityCount(
         val slide: Long,
         val elevator: Long
     )
 
-    data class RoadSummary (
+    data class RoadSummary(
         val location: String,
         val road_name: String,
         val distance: Long,
