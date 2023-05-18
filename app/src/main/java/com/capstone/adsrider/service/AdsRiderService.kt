@@ -1,7 +1,7 @@
 package com.capstone.adsrider.service
 
 import com.capstone.adsrider.model.LoginBody
-import com.capstone.adsrider.model.Riding
+import com.capstone.adsrider.model.ResultBody
 import com.capstone.adsrider.model.WithdrawalBody
 import com.capstone.adsrider.model.buyTicketBody
 import okhttp3.JavaNetCookieJar
@@ -47,7 +47,7 @@ class AdsRiderService {
         WithdrawalBody(to, amount)
     )
 
-    suspend fun ridingComplete(riding: Riding) = AdsRiderObject.retrofitService.ridingComplete(riding)
+    suspend fun ridingComplete(body: ResultBody) = AdsRiderObject.retrofitService.adsResult(body)
 
     suspend fun buyTicket(day: Int) = AdsRiderObject.retrofitService.buyTicket(buyTicketBody(day))
 }

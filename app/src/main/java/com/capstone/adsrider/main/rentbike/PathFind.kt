@@ -22,9 +22,8 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.capstone.adsrider.R
-import com.capstone.adsrider.model.Riding
+import com.capstone.adsrider.model.ResultBody
 import com.capstone.adsrider.utility.App
-import com.capstone.adsrider.utility.CalDistance
 import com.capstone.adsrider.utility.RidingSharedPreference
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -58,11 +57,11 @@ fun PathFindScreen(navController: NavController, pathFindViewModel: PathFindView
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location: Location ->
                 startPosition = LatLng(location.latitude, location.longitude)
-                Log.d("pos", startPosition.toString())
             }
     }
     val path = pathFindViewModel.path.collectAsState().value
     val places = pathFindViewModel.places.collectAsState().value
+    val distance = pathFindViewModel.distance.collectAsState().value
     val cameraPositionState: CameraPositionState = rememberCameraPositionState {
         // 카메라 초기 위치를 설정합니다.
         position = CameraPosition(startPosition, 11.0)
@@ -170,33 +169,25 @@ fun PathFindScreen(navController: NavController, pathFindViewModel: PathFindView
         }
     }
 
-    Box(modifier = Modifier.fillMaxHeight(), Alignment.BottomEnd) {
-        Button(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                var gson = Gson()
-                var calDistance = CalDistance()
-                var distance = 0.0
-                lateinit var before: LatLng
-                path.forEachIndexed{ index, item ->
-                    if (index != 0) {
-                        distance += calDistance.getDistance(before, path[index])
-                    }
-                    before = path[index]
+    if (path.isNotEmpty()) {
+        Box(modifier = Modifier.fillMaxHeight(), Alignment.BottomEnd) {
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {
+                    var gson = Gson()
+                    val ridingData = ResultBody(
+                        ads_id = "",
+                        meters = distance,
+                        path = gson.toJson(path),
+                        start_time = "",
+                        end_time = ""
+                    )
+                    RidingSharedPreference(App.context()).setRidingPrefs(ridingData)
+                    navController.navigate("ad select")
                 }
-
-                val ridingData = Riding(
-                    ads_id = "",
-                    distance = distance.toLong(),
-                    path = gson.toJson(path),
-                    start_at = 0,
-                    completed_at = 0
-                )
-                RidingSharedPreference(App.context()).setRidingPrefs(ridingData)
-                navController.navigate("ad select")
+            ) {
+                Text(text = "광고 선택")
             }
-        ) {
-            Text(text = "광고 선택")
         }
     }
 }

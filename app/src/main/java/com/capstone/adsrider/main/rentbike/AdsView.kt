@@ -1,7 +1,8 @@
 package com.capstone.adsrider.main.rentbike
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,7 +12,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -44,7 +44,10 @@ import com.capstone.adsrider.utility.App
 import com.capstone.adsrider.utility.RidingSharedPreference
 import com.holix.android.bottomsheetdialog.compose.BottomSheetDialog
 import com.holix.android.bottomsheetdialog.compose.BottomSheetDialogProperties
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AdsView(navController: NavHostController, adsViewModel: AdsViewModel = viewModel()) {
     val ads by adsViewModel.ads.collectAsState()
@@ -160,10 +163,12 @@ fun AdsView(navController: NavHostController, adsViewModel: AdsViewModel = viewM
                             backgroundColor = colorResource(R.color.dark_blue)
                         ),
                         onClick = {
-                            val ridingData = RidingSharedPreference(App.context()).getRidingPrefs()
-                            ridingData.ads_id = ads[index].id.toString()
-                            ridingData.start_at = System.currentTimeMillis()
-                            RidingSharedPreference(App.context()).setRidingPrefs(ridingData)
+                            val resultData = RidingSharedPreference(App.context()).getRidingPrefs()
+                            val current = LocalDateTime.now()
+                            val formatter = DateTimeFormatter.ISO_DATE_TIME
+                            resultData.ads_id = ads[index].id.toString()
+                            resultData.start_time = current.format(formatter)
+                            RidingSharedPreference(App.context()).setRidingPrefs(resultData)
                             navController.navigate("ad exposure/${ads[index].image_id}")
                         }
                     ) {

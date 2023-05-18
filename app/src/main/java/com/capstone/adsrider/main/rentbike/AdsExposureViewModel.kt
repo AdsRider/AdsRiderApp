@@ -2,20 +2,21 @@ package com.capstone.adsrider.main.rentbike
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.capstone.adsrider.model.Riding
+import com.capstone.adsrider.model.ResultBody
+import com.capstone.adsrider.model.ResultResponse
 import com.capstone.adsrider.service.AdsRiderService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class AdsExposureViewModel : ViewModel() {
     private val adsRiderService = AdsRiderService()
-    private val _state = MutableStateFlow("")
+    private val _result = MutableStateFlow<ResultResponse?>(null)
 
-    val state get() = _state
+    val result get() = _result
 
-    fun ridingComplete(riding: Riding) {
+    fun ridingComplete(resultBody: ResultBody) {
         viewModelScope.launch {
-            state.value = adsRiderService.ridingComplete(riding)!!
+            result.value = adsRiderService.ridingComplete(resultBody)!!
         }
     }
 }

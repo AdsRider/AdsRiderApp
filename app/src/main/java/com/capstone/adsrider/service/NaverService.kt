@@ -20,7 +20,7 @@ class NaverService {
             start,
             destination
         )
-    }.getOrNull()?.routes?.get(0)?.summary
+    }.getOrNull()?.routes?.get(0)?.legs?.get(0)
 
     suspend fun getPlaces(start: String, word: String) = runCatching {
         NaverObject.retrofitService.getPlaces(

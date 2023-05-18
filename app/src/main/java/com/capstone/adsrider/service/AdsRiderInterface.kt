@@ -17,10 +17,10 @@ interface AdsRiderInterface {
         @Body withdrawalBody: WithdrawalBody
     ): String
 
-    @POST("user/ridingcomplete")
-    suspend fun ridingComplete(
-        @Body riding: Riding
-    ): String
+    @POST("ads/result")
+    suspend fun adsResult(
+        @Body resultBody: ResultBody
+    ): ResultResponse
 
     @GET("user/me")
     suspend fun whoami(): User

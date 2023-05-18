@@ -17,6 +17,9 @@ class PathFindViewModel : ViewModel() {
     private val _path = MutableStateFlow(emptyList<LatLng>())
     val path get() = _path
 
+    private val _distance = MutableStateFlow(0)
+    val distance get() = _distance
+
     fun getPlaces(start: LatLng, word: String) {
         viewModelScope.launch {
             val startParam = "${start.latitude},${start.longitude}"
@@ -31,26 +34,26 @@ class PathFindViewModel : ViewModel() {
                 "${it.x},${it.y},name=${it.title},placeid=${it.cid}"
             }
 
-            val summary = naverService.getPath(startParam, destinationParam)!!
+            val pathData = naverService.getPath(startParam, destinationParam)!!
 
-            val startLatLng = LatLng(
-                summary.start.location.split(",")[1].toDouble(),
-                summary.start.location.split(",")[0].toDouble()
-            )
+            val startLatLng = pathData.summary.start.location.split(",").let {
+                LatLng(it[1].toDouble(), it[0].toDouble())
+            }
 
-            val waypoints = summary.road_summary.map {
+            val waypoints = pathData.steps.map {
                 LatLng(
-                    it.location.split(",")[1].toDouble(),
-                    it.location.split(",")[0].toDouble()
+                    it.guide.turn_point.split(",")[1].toDouble(),
+                    it.guide.turn_point.split(",")[0].toDouble()
                 )
             }
 
-            val endLatLng = summary.end.location.split(",").let {
+            val endLatLng = pathData.summary.end.location.split(",").let {
                 LatLng(it[1].toDouble(), it[0].toDouble())
             }
 
             _path.value = listOf(startLatLng) + waypoints + endLatLng
             _places.value = emptyList()
+            _distance.value = pathData.summary.distance.toInt()
         }
     }
 }

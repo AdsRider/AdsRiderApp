@@ -1,9 +1,14 @@
 package com.capstone.adsrider.main.rentbike
 
 import android.Manifest
+import android.os.Build
+import android.os.Bundle
 import android.os.SystemClock.sleep
 import android.util.Log
 import android.view.ViewGroup
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
@@ -72,7 +77,7 @@ fun RentBikeScreen() {
             )
         ) {
             val imageId = it.arguments?.getInt("imageId")
-            AdsExposure(imageId!!)
+            AdsExposure(imageId!!, navController = navController)
         }
     }
 }

@@ -2,7 +2,7 @@ package com.capstone.adsrider.utility
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.capstone.adsrider.model.Riding
+import com.capstone.adsrider.model.ResultBody
 
 class RidingSharedPreference(context: Context) {
     private val prefsFilename = "RidingPrefs"
@@ -12,13 +12,13 @@ class RidingSharedPreference(context: Context) {
         return prefs.getString(key, "")!!
     }
 
-    fun getRidingPrefs(): Riding {
-        return Riding(
+    fun getRidingPrefs(): ResultBody {
+        return ResultBody(
             ads_id = prefs.getString("ads_id", "")!!,
-            distance = prefs.getLong("distance", 0)!!,
+            meters = prefs.getInt("meters", 0)!!,
             path = prefs.getString("path", "")!!,
-            start_at = prefs.getLong("start_at", 0)!!,
-            completed_at = prefs.getLong("completed_at", 0)!!
+            start_time = prefs.getString("start_time", "")!!,
+            end_time = prefs.getString("end_time", "")!!
         )
     }
 
@@ -26,11 +26,11 @@ class RidingSharedPreference(context: Context) {
         return prefs.edit().putString(key, value).apply()
     }
 
-    fun setRidingPrefs(riding: Riding) {
+    fun setRidingPrefs(riding: ResultBody) {
         prefs.edit().putString("ads_id", riding.ads_id).apply()
-        prefs.edit().putLong("distance", riding.distance).apply()
+        prefs.edit().putInt("meters", riding.meters).apply()
         prefs.edit().putString("path", riding.path).apply()
-        prefs.edit().putLong("start_at", riding.start_at).apply()
-        prefs.edit().putLong("completed_at", riding.completed_at).apply()
+        prefs.edit().putString("start_time", riding.start_time).apply()
+        prefs.edit().putString("end_time", riding.end_time).apply()
     }
 }
