@@ -1,12 +1,9 @@
 package com.capstone.adsrider.main.rentbike
 
 import android.Manifest
-import android.os.Bundle
 import android.os.SystemClock.sleep
 import android.util.Log
 import android.view.ViewGroup
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
@@ -20,7 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -42,7 +38,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.capstone.adsrider.main.pathfind.PathFindScreen
 import com.capstone.adsrider.utility.QRcodeAnalyser
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
@@ -51,29 +46,10 @@ import com.google.common.util.concurrent.ListenableFuture
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-@ExperimentalPermissionsApi
-class RentBike : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            RentBikeScreen()
-        }
-    }
-}
-
 @Composable
 fun RentBikeScreen() {
     val navController = rememberNavController()
-    Scaffold {
-        Box(Modifier.padding(it)) {
-            RentBikeNavigationGraph(navController = navController)
-        }
-    }
-}
 
-@OptIn(ExperimentalPermissionsApi::class)
-@Composable
-fun RentBikeNavigationGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
         startDestination = "rent bike"

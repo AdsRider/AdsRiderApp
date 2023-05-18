@@ -1,4 +1,4 @@
-package com.capstone.adsrider.main.pathfind
+package com.capstone.adsrider.main.rentbike
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -20,9 +20,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import com.capstone.adsrider.R
-import com.capstone.adsrider.main.rentbike.PathFindViewModel
 import com.capstone.adsrider.model.Riding
 import com.capstone.adsrider.utility.App
 import com.capstone.adsrider.utility.CalDistance
@@ -39,7 +38,7 @@ private lateinit var fusedLocationClient: FusedLocationProviderClient
 
 @OptIn(ExperimentalNaverMapApi::class)
 @Composable
-fun PathFindScreen(navController: NavHostController, pathFindViewModel: PathFindViewModel = viewModel()) {
+fun PathFindScreen(navController: NavController, pathFindViewModel: PathFindViewModel = viewModel()) {
     var startPosition by remember { mutableStateOf(LatLng(37.3400333, 126.7335056)) }
     // 위치 권한 요청 및 현재 위치 구하기
     val context = LocalContext.current

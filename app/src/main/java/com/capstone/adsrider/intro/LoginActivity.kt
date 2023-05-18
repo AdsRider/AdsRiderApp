@@ -1,7 +1,7 @@
 package com.capstone.adsrider.intro
 
+import android.content.Intent
 import android.os.Bundle
-import android.text.TextUtils.isEmpty
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -47,8 +47,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.capstone.adsrider.AdsRider
 import com.capstone.adsrider.R
+import com.capstone.adsrider.main.HomeActivity
 
 class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,7 +66,6 @@ class LoginActivity : ComponentActivity() {
 sealed class Login(val router: String) {
     object UserLogin : Login("LOGIN")
     object SignIn : Login("SIGNIN")
-    object Home : Login("HOME")
 }
 
 @Composable
@@ -80,15 +79,12 @@ fun LoginGraph() {
         composable(Login.SignIn.router) {
             SignInView(navController = navController)
         }
-        composable(Login.Home.router) {
-            AdsRider()
-        }
     }
 }
 
 @Composable
 fun LoginView(navController: NavController, loginViewModel: LoginViewModel = viewModel()) {
-    var loginState = loginViewModel.loginState.collectAsState().value
+    val loginState = loginViewModel.loginState.collectAsState().value
     var email by remember { mutableStateOf("") }
     var passwd by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
@@ -96,7 +92,9 @@ fun LoginView(navController: NavController, loginViewModel: LoginViewModel = vie
 
     if (loginState == "success") {
         loginViewModel.setLoginState("")
-        navController.navigate("HOME")
+        val intent = Intent(context, HomeActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NO_ANIMATION
+        context.startActivity(intent)
     } else if (loginState != "") {
         Toast.makeText(context, loginState, Toast.LENGTH_SHORT).show()
         loginViewModel.setLoginState("")
@@ -174,7 +172,7 @@ fun LoginView(navController: NavController, loginViewModel: LoginViewModel = vie
 
 @Composable
 fun SignInView(navController: NavController, loginViewModel: LoginViewModel = viewModel()) {
-    var signInState = loginViewModel.signInState.collectAsState().value
+    val signInState = loginViewModel.signInState.collectAsState().value
     var email by remember { mutableStateOf("") }
     var passwd by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
@@ -182,7 +180,9 @@ fun SignInView(navController: NavController, loginViewModel: LoginViewModel = vi
 
     if (signInState == "success") {
         loginViewModel.setSignInState("")
-        navController.navigate("HOME")
+        navController.navigate("LOGIN") {
+            popUpTo("SIGNIN")
+        }
     } else if (signInState != "") {
         Toast.makeText(context, signInState, Toast.LENGTH_SHORT).show()
         loginViewModel.setSignInState("")
@@ -241,16 +241,7 @@ fun SignInView(navController: NavController, loginViewModel: LoginViewModel = vi
                 contentColor = Color.White
             ),
             onClick = {
-                try {
-                    if (!isEmpty(email) && !isEmpty(passwd)) {
-                        loginViewModel.signin(email, passwd)
-                        navController.navigate("LIGIN")
-                    } else {
-                        Toast.makeText(context, "아이디와 비밀번호를 입력하세요", Toast.LENGTH_SHORT).show()
-                    }
-                } catch (e: Exception) {
-                    Toast.makeText(context, e.localizedMessage, Toast.LENGTH_SHORT).show()
-                }
+                loginViewModel.signin(email, passwd)
             }
         ) {
             Text(

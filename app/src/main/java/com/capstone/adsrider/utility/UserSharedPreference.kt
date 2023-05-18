@@ -17,8 +17,8 @@ class UserSharedPreference(context: Context) {
             email = prefs.getString("email", "")!!,
             level = prefs.getString("level", "")!!,
             address = prefs.getString("address", "")!!,
-            expire_date = prefs.getLong("expire_date", 0)!!,
-            join_time = prefs.getLong("join_time", 0)!!
+            expire_date = prefs.getLong("expire_date", 0L)!!,
+            join_time = prefs.getLong("join_time", 0L)!!
         )
     }
 
@@ -27,7 +27,7 @@ class UserSharedPreference(context: Context) {
     }
 
     fun setUserPrefs(user: User) {
-        prefs.edit().putString("email", user.email.toString()).apply()
+        prefs.edit().putString("email", user.email).apply()
         prefs.edit().putString("level", user.level).apply()
         prefs.edit().putString("address", user.address).apply()
         prefs.edit().putLong("expire_date", user.expire_date).apply()

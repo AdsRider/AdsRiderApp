@@ -3,6 +3,7 @@ package com.capstone.adsrider.service
 import com.capstone.adsrider.model.LoginBody
 import com.capstone.adsrider.model.Riding
 import com.capstone.adsrider.model.WithdrawalBody
+import com.capstone.adsrider.model.buyTicketBody
 import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -36,13 +37,6 @@ class AdsRiderService {
 
     suspend fun getMe() = AdsRiderObject.retrofitService.whoami()
 
-    suspend fun logout(email: String, password: String) = runCatching {
-        AdsRiderObject.retrofitService.logout(
-            email,
-            password
-        )
-    }.getOrNull()
-
     suspend fun getBalance() = AdsRiderObject.retrofitService.getBalance()
 
     suspend fun getHistory() = AdsRiderObject.retrofitService.getHistory()
@@ -55,7 +49,5 @@ class AdsRiderService {
 
     suspend fun ridingComplete(riding: Riding) = AdsRiderObject.retrofitService.ridingComplete(riding)
 
-    suspend fun buyTicket(day: Int) = runCatching {
-        AdsRiderObject.retrofitService.buyTicket(day)
-    }.getOrNull()
+    suspend fun buyTicket(day: Int) = AdsRiderObject.retrofitService.buyTicket(buyTicketBody(day))
 }

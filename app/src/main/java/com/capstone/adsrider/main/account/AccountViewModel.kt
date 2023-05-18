@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.capstone.adsrider.model.Balance
 import com.capstone.adsrider.model.History
 import com.capstone.adsrider.service.AdsRiderService
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -30,6 +31,10 @@ class AccountViewModel : ViewModel() {
                 Log.d("balance_err", e.toString())
             }
         }
+    }
+
+    fun stopAccount() {
+        viewModelScope.cancel()
     }
 
     fun getHistory() {

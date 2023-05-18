@@ -1,5 +1,6 @@
 package com.capstone.adsrider.main.buyticket
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,7 +19,12 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,10 +45,12 @@ import androidx.navigation.compose.rememberNavController
 fun BuyTicketScreen(buyTicketViewModel: BuyTicketViewModel = viewModel()) {
     val navController = rememberNavController()
     val state = buyTicketViewModel.state.collectAsState().value
+    val user = buyTicketViewModel.user.collectAsState().value
     val context = LocalContext.current
 
     if (state == "success") {
-        Toast.makeText(context, "결제에 성공하였습니다", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "구매 완료", Toast.LENGTH_SHORT).show()
+        Log.d("check", user.toString())
         buyTicketViewModel.setState("")
     } else if (state == "fail") {
         Toast.makeText(context, "결제에 실패하였습니다", Toast.LENGTH_SHORT).show()
