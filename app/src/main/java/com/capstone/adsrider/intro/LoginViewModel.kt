@@ -34,9 +34,9 @@ class LoginViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val result = adsRiderService.login(email, passwd)
-                UserSharedPreference(App.context()).setUserPrefs(result!!)
+                UserSharedPreference(App.context()).setUserPrefs(result)
                 _loginState.value = "success"
-                user.value = result
+                _user.value = result
             } catch (e: HttpException) {
                 val errorMessage = e.message!!
                 Log.d("login_error", e.toString())
@@ -55,7 +55,6 @@ class LoginViewModel : ViewModel() {
                 adsRiderService.signIn(email, passwd)
                 _signInState.value = "success"
             } catch (e: HttpException) {
-                val errorManager = e.message!!
                 Log.d("login_error", e.toString())
                 _signInState.value = "회원가입 오류 발생"
             }

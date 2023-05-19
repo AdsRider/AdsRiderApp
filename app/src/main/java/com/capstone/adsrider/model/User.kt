@@ -4,6 +4,6 @@ data class User(
     val email: String,
     val level: String,
     val address: String,
-    var expire_date: Long,
-    var join_time: Long
+    val expired_date: Long,
+    val join_time: Long
 )

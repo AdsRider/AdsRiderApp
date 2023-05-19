@@ -49,6 +49,7 @@ import com.capstone.adsrider.main.rentbike.RentBikeScreen
 import com.capstone.adsrider.main.swapcoin.SwapCoinScreen
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
+import java.text.SimpleDateFormat
 
 class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,6 +71,11 @@ sealed class BottomNavItem(val icon: Int, val screenRoute: String) {
     object ButTicket : BottomNavItem(R.drawable.buy_ticket, "BUY TICKET")
     object Withdrawal : BottomNavItem(R.drawable.withdrawal, "WITHDRAWAL")
     object MyPage : BottomNavItem(R.drawable.user_info, "My Page")
+}
+
+fun convertTimestampToDate(timestamp: Long): String {
+    val sdf = SimpleDateFormat("yyyy년 MM월 dd일까지")
+    return sdf.format(timestamp).toString()
 }
 
 @Composable
@@ -171,7 +177,7 @@ fun MyPage(accountViewModel: AccountViewModel = viewModel(), loginViewModel: Log
                     .padding(bottom = 10.dp),
                 style = MaterialTheme.typography.h5,
                 text = "${user.email}님")
-            if (user.expire_date == 0L) {
+            if (user.expired_date <= System.currentTimeMillis()) {
                 Canvas(
                     modifier = Modifier
                         .width(300.dp)
@@ -222,7 +228,7 @@ fun MyPage(accountViewModel: AccountViewModel = viewModel(), loginViewModel: Log
                     ) {
                         Text(
                             modifier = Modifier.padding(end = 10.dp, bottom = 10.dp),
-                            text = user.expire_date.toString()
+                            text = convertTimestampToDate(user.expired_date)
                         )
                     }
                 }
