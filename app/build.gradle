@@ -53,7 +53,6 @@ dependencies {
     implementation 'androidx.compose.material3:material3'
     implementation platform('androidx.compose:compose-bom:2022.10.00')
     androidTestImplementation platform('androidx.compose:compose-bom:2022.10.00')
-    androidTestImplementation platform('androidx.compose:compose-bom:2022.10.00')
     def camerax_version = "1.0.2"
     def firebase_version = "8.0.2"
 

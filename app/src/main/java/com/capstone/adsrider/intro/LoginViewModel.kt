@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.capstone.adsrider.service.AdsRiderService
 import com.capstone.adsrider.utility.App
 import com.capstone.adsrider.utility.UserSharedPreference
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -22,11 +21,18 @@ class LoginViewModel : ViewModel() {
     private val _signInState = MutableStateFlow("")
     val signInState get() = _signInState
 
+    private val _logoutState = MutableStateFlow("")
+    val logoutState get() = _logoutState
+
     fun setLoginState(state: String) {
         _loginState.value = state
     }
 
     fun setSignInState(state: String) {
+        _signInState.value = state
+    }
+
+    fun setLogoutState(state: String) {
         _signInState.value = state
     }
 
@@ -61,7 +67,15 @@ class LoginViewModel : ViewModel() {
         }
     }
     fun logout() {
-        viewModelScope.cancel()
+        viewModelScope.launch {
+            try {
+                adsRiderService.logout()
+                _logoutState.value = "success"
+            } catch (e: HttpException) {
+                Log.d("logout_error", e.toString())
+                _logoutState.value = "로그아웃 오류 발생"
+            }
+        }
     }
 
     fun getUserInfo() {

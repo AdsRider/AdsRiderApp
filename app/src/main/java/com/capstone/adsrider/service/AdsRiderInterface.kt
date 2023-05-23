@@ -35,6 +35,9 @@ interface AdsRiderInterface {
         @Body loginBody: LoginBody
     ): User
 
+    @GET("user/logout")
+    suspend fun logout()
+
     @GET("ads")
     suspend fun getAdsList(): List<Ad>
 

@@ -34,6 +34,7 @@ class AdsRiderService {
     suspend fun signIn(email: String, password: String) = AdsRiderObject.retrofitService.signin(
         LoginBody(email, password)
     )
+    suspend fun logout() = AdsRiderObject.retrofitService.logout()
 
     suspend fun getMe() = AdsRiderObject.retrofitService.whoami()
 

@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.graphics.Paint
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Canvas
@@ -116,7 +117,13 @@ fun TopBar(navController: NavController) {
                     contentDescription = "")
             }
             IconButton(
-                onClick = { navController.navigate("My Page") },
+                onClick = {
+                    navController.navigate("My Page") {
+                        navController.graph.startDestinationRoute?.let {
+                            popUpTo(it) { saveState = true }
+                        }
+                    }
+                          },
                 modifier = Modifier.align(Alignment.CenterEnd)
             ) {
                 Icon(
@@ -146,13 +153,17 @@ fun HomeScreen() {
 fun MyPage(accountViewModel: AccountViewModel = viewModel(), loginViewModel: LoginViewModel = viewModel()) {
     val balance = accountViewModel.balance.collectAsState().value
     val user = loginViewModel.user.collectAsState().value
-    var loginState by remember { mutableStateOf(true) }
+    val logoutState = loginViewModel.logoutState.collectAsState().value
     val context = LocalContext.current
 
-    if (!loginState) {
+    if (logoutState == "success") {
+        loginViewModel.setSignInState("")
         val intent = Intent(context, LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NO_ANIMATION
         context.startActivity(intent)
+    } else if (logoutState != "") {
+        Toast.makeText(context, logoutState, Toast.LENGTH_SHORT).show()
+        loginViewModel.setSignInState("")
     }
 
     Surface(
@@ -286,7 +297,6 @@ fun MyPage(accountViewModel: AccountViewModel = viewModel(), loginViewModel: Log
                     .clickable {
                         accountViewModel.stopAccount()
                         loginViewModel.logout()
-                        loginState = false
                     },
                 style = TextStyle(textDecoration = TextDecoration.Underline),
                 color = Color.Gray,

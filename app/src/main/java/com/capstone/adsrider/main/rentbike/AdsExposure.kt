@@ -1,6 +1,13 @@
 package com.capstone.adsrider.main.rentbike
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Build
+import android.os.Bundle
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
@@ -11,14 +18,19 @@ import androidx.compose.material.Button
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
@@ -34,13 +46,50 @@ fun AdsExposure(
     navController: NavHostController,
     adsExposureViewModel: AdsExposureViewModel = viewModel()
 ) {
+    val context = LocalContext.current
+    var ticks = adsExposureViewModel.drivingTime.collectAsState().value
     val result = adsExposureViewModel.result.collectAsState().value
+
+    if (ActivityCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) != PackageManager.PERMISSION_GRANTED) {
+        return
+    }
+
+    val locationManager = LocalContext.current.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    val currentSpeed = remember { mutableStateOf(0) }
+
+    val locationListener = object : LocationListener {
+        override fun onLocationChanged(location: Location) {
+            // 위치가 변경되면 호출되는 콜백
+            val speed = location.speed * 3.6f // m/s를 km/h로 변환
+            currentSpeed.value = speed.toInt()
+        }
+
+        override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+    }
+
+    DisposableEffect(Unit) {
+        // Composable이 나타날 때 위치 업데이트 리스너를 등록
+        val minTime = 1000L // 위치 업데이트 간격(ms)
+        val minDistance = 0f // 위치 업데이트 최소 거리(m)
+        val locationProvider = LocationManager.GPS_PROVIDER // GPS 위치 제공자
+        locationManager.requestLocationUpdates(locationProvider, minTime, minDistance, locationListener)
+
+        onDispose {
+            // Composable이 사라질 때 위치 업데이트 리스너를 제거
+            locationManager.removeUpdates(locationListener)
+        }
+    }
+    adsExposureViewModel.runDrivingTime()
+    
 
     if (result != null) {
         Dialog(onDismissRequest = {}) {
             Surface(
                 modifier = Modifier
-                    .width(300.dp)
+                    .height(500.dp)
                     .wrapContentHeight(),
                 shape = RoundedCornerShape(12.dp),
                 color = Color.White
@@ -114,7 +163,7 @@ fun AdsExposure(
             painter = rememberAsyncImagePainter("https://adsrider.wo.tc/api/image/$imageId}"),
             contentDescription = "Ads Design",
             modifier = Modifier
-                .height(500.dp)
+                .width(300.dp)
                 .align(Alignment.Center)
         )
         Button(onClick = {
@@ -132,6 +181,7 @@ fun AdsExposure(
         Row(
             modifier = Modifier
                 .background(Color.White)
+                .width(300.dp)
                 .align(Alignment.BottomCenter)
         ) {
             Column(
@@ -145,24 +195,8 @@ fun AdsExposure(
                 )
                 Text(
                     textAlign = TextAlign.Center,
-                    text = "0km/s",
+                    text = "%dkm/h".format(currentSpeed.value),
                     fontSize = 20.sp
-                )
-            }
-            Column(
-                modifier = Modifier.weight(1F),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    color = Color.LightGray,
-                    textAlign = TextAlign.Center,
-                    text = "주행거리"
-                )
-                Text(
-                    textAlign = TextAlign.Center,
-                    text = "0km",
-                    fontSize = 20.sp
-
                 )
             }
             Column(
@@ -176,7 +210,8 @@ fun AdsExposure(
                 )
                 Text(
                     textAlign = TextAlign.Center,
-                    text = "00:00:00",
+                    text = "%02d:%02d:%02d".format(ticks/3600, ticks/60%60, ticks%60)
+                    ,
                     fontSize = 20.sp
                 )
             }
