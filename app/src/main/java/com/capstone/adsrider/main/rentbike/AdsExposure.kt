@@ -47,7 +47,7 @@ fun AdsExposure(
     adsExposureViewModel: AdsExposureViewModel = viewModel()
 ) {
     val context = LocalContext.current
-    var ticks = adsExposureViewModel.drivingTime.collectAsState().value
+    val ticks = adsExposureViewModel.drivingTime.collectAsState().value
     val result = adsExposureViewModel.result.collectAsState().value
 
     if (ActivityCompat.checkSelfPermission(

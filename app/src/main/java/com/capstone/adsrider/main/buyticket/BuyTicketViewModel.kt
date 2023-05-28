@@ -25,7 +25,6 @@ class BuyTicketViewModel : ViewModel() {
                 adsRiderService.buyTicket(day)
                 _state.value = "success"
             } catch (e : HttpException) {
-                val errorManager = e.message!!
                 Log.d("buyTicket_error", e.toString())
                 _state.value = "fail"
             }

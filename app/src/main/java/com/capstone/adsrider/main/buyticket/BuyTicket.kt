@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Tab
@@ -29,6 +30,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -39,6 +42,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.capstone.adsrider.R
 
 @Composable
 fun BuyTicketScreen(buyTicketViewModel: BuyTicketViewModel = viewModel()) {
@@ -64,24 +68,35 @@ fun BuyTicketScreen(buyTicketViewModel: BuyTicketViewModel = viewModel()) {
         ) {
             Box(
                 modifier = Modifier
-                    .height(400.dp)
-                    .width(300.dp)
-                    .clip(RoundedCornerShape(50.dp))
-                    .background(MaterialTheme.colors.secondary)
+                    .fillMaxWidth()
+                    .padding(40.dp)
+                    .height(450.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(colorResource(R.color.light_blue))
             ) {
                 Column(
-                    Modifier.align(Alignment.TopCenter)
+                    Modifier.align(Alignment.Center)
                 ) {
-                    Spacer(modifier = Modifier.height(30.dp))
                     Text(
                         text = "1년권",
                         style = MaterialTheme.typography.h2,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = FontFamily.Monospace,
                         color = Color.White,
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center
                     )
+                    Spacer(modifier = Modifier.height(60.dp))
                     Text(
-                        text = "\n1년 동안 이용 가능\n\n무제한 반복 대여 가능\n\n\n결제금액     30,000원",
+                        text = "365일 이용 기한 추가",
+                        color = Color.White,
+                        fontSize = 25.sp,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(30.dp))
+                    Text(
+                        text = "결제 금액   30,000 ADS",
                         color = Color.White,
                         fontSize = 25.sp,
                         modifier = Modifier.fillMaxWidth(),
@@ -89,13 +104,20 @@ fun BuyTicketScreen(buyTicketViewModel: BuyTicketViewModel = viewModel()) {
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(30.dp))
-            Button(onClick = {
-                buyTicketViewModel.buyTicket(365)
-            }) {
+            Spacer(modifier = Modifier.height(20.dp))
+            Button(
+                modifier = Modifier.width(280.dp),
+                shape = RoundedCornerShape(24.dp),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = colorResource(R.color.dark_blue)
+                ),
+                onClick = {
+
+                }) {
                 Text(
                     text = "구매하기",
-                    fontSize = 25.sp
+                    fontSize = 25.sp,
+                    color = Color.White
                 )
             }
         }
@@ -111,24 +133,35 @@ fun BuyTicketScreen(buyTicketViewModel: BuyTicketViewModel = viewModel()) {
         ) {
             Box(
                 modifier = Modifier
-                    .height(400.dp)
-                    .width(300.dp)
-                    .clip(RoundedCornerShape(50.dp))
-                    .background(MaterialTheme.colors.secondary)
+                    .fillMaxWidth()
+                    .padding(40.dp)
+                    .height(450.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(colorResource(R.color.light_blue))
             ) {
                 Column(
-                    Modifier.align(Alignment.TopCenter)
+                    Modifier.align(Alignment.Center)
                 ) {
-                    Spacer(modifier = Modifier.height(30.dp))
                     Text(
                         text = "1달권",
                         style = MaterialTheme.typography.h2,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = FontFamily.Monospace,
                         color = Color.White,
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center
                     )
+                    Spacer(modifier = Modifier.height(60.dp))
                     Text(
-                        text = "\n1달 동안 이용 가능\n\n무제한 반복 대여 가능\n\n\n결제금액      7,000원",
+                        text = "30일 이용 기한 추가",
+                        color = Color.White,
+                        fontSize = 25.sp,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(30.dp))
+                    Text(
+                        text = "결제 금액   70,000 ADS",
                         color = Color.White,
                         fontSize = 25.sp,
                         modifier = Modifier.fillMaxWidth(),
@@ -137,12 +170,19 @@ fun BuyTicketScreen(buyTicketViewModel: BuyTicketViewModel = viewModel()) {
                 }
             }
             Spacer(modifier = Modifier.height(20.dp))
-            Button(onClick = {
-                buyTicketViewModel.buyTicket(30)
-            }) {
+            Button(
+                modifier = Modifier.width(280.dp),
+                shape = RoundedCornerShape(24.dp),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = colorResource(R.color.dark_blue)
+                ),
+                onClick = {
+
+                }) {
                 Text(
                     text = "구매하기",
-                    fontSize = 25.sp
+                    fontSize = 25.sp,
+                    color = Color.White
                 )
             }
         }
@@ -158,24 +198,35 @@ fun BuyTicketScreen(buyTicketViewModel: BuyTicketViewModel = viewModel()) {
         ) {
             Box(
                 modifier = Modifier
-                    .height(400.dp)
-                    .width(300.dp)
-                    .clip(RoundedCornerShape(50.dp))
-                    .background(MaterialTheme.colors.secondary)
+                    .fillMaxWidth()
+                    .padding(40.dp)
+                    .height(450.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(colorResource(R.color.light_blue))
             ) {
                 Column(
-                    Modifier.align(Alignment.TopCenter)
+                    Modifier.align(Alignment.Center)
                 ) {
-                    Spacer(modifier = Modifier.height(30.dp))
                     Text(
                         text = "1일권",
                         style = MaterialTheme.typography.h2,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = FontFamily.Monospace,
                         color = Color.White,
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center
                     )
+                    Spacer(modifier = Modifier.height(60.dp))
                     Text(
-                        text = "\n1일 동안 2시간 이용 가능\n\n대여횟수 제한없이\n재 대여 가능\n\n결제금액      2,000원",
+                        text = "1일 이용 기한 추가",
+                        color = Color.White,
+                        fontSize = 25.sp,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(30.dp))
+                    Text(
+                        text = "결제 금액   2,000 ADS",
                         color = Color.White,
                         fontSize = 25.sp,
                         modifier = Modifier.fillMaxWidth(),
@@ -184,12 +235,19 @@ fun BuyTicketScreen(buyTicketViewModel: BuyTicketViewModel = viewModel()) {
                 }
             }
             Spacer(modifier = Modifier.height(20.dp))
-            Button(onClick = {
-                buyTicketViewModel.buyTicket(7)
-            }) {
+            Button(
+                modifier = Modifier.width(280.dp),
+                shape = RoundedCornerShape(24.dp),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = colorResource(R.color.dark_blue)
+                ),
+                onClick = {
+
+                }) {
                 Text(
                     text = "구매하기",
-                    fontSize = 25.sp
+                    fontSize = 25.sp,
+                    color = Color.White
                 )
             }
         }

@@ -3,10 +3,12 @@ package com.capstone.adsrider.main
 import android.Manifest
 import android.content.Intent
 import android.graphics.Paint
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -30,6 +32,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,9 +45,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.capstone.adsrider.R
-import com.capstone.adsrider.account.AccountScreen
 import com.capstone.adsrider.intro.LoginActivity
 import com.capstone.adsrider.intro.LoginViewModel
+import com.capstone.adsrider.main.account.AccountScreen
 import com.capstone.adsrider.main.account.AccountViewModel
 import com.capstone.adsrider.main.buyticket.BuyTicketScreen
 import com.capstone.adsrider.main.rentbike.RentBikeScreen
@@ -53,6 +57,7 @@ import com.google.accompanist.permissions.rememberPermissionState
 import java.text.SimpleDateFormat
 
 class HomeActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -79,6 +84,7 @@ fun convertTimestampToDate(timestamp: Long): String {
     return sdf.format(timestamp).toString()
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AdsRider() {
     val navController = rememberNavController()
@@ -179,20 +185,22 @@ fun MyPage(accountViewModel: AccountViewModel = viewModel(), loginViewModel: Log
                     .fillMaxWidth()
                     .padding(vertical = 20.dp),
                 style = MaterialTheme.typography.h4,
+                fontFamily = FontFamily.Monospace,
+                fontWeight = FontWeight.Bold,
                 color = colorResource(R.color.dark_blue),
-                text = "마이 라이딩"
+                text = "마이라이딩"
             )
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 10.dp),
                 style = MaterialTheme.typography.h5,
-                text = "${user.email}님")
+                text = " ${user.email}님")
             if (user.expired_date <= System.currentTimeMillis()) {
                 Canvas(
                     modifier = Modifier
                         .width(300.dp)
-                        .height(150.dp)
+                        .height(180.dp)
                         .align(Alignment.CenterHorizontally)
                 ) {
                     drawRoundRect(
@@ -220,7 +228,7 @@ fun MyPage(accountViewModel: AccountViewModel = viewModel(), loginViewModel: Log
                 Box(
                     modifier = Modifier
                         .width(300.dp)
-                        .height(150.dp)
+                        .height(180.dp)
                         .align(Alignment.CenterHorizontally)
                         .clip(RoundedCornerShape(12.dp))
                         .background(colorResource(id = R.color.light_blue))
@@ -247,10 +255,7 @@ fun MyPage(accountViewModel: AccountViewModel = viewModel(), loginViewModel: Log
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(100.dp)
-                    .padding(vertical = 10.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(color = Color.LightGray),
+                    .height(50.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
@@ -258,40 +263,20 @@ fun MyPage(accountViewModel: AccountViewModel = viewModel(), loginViewModel: Log
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     //총 라이딩 횟수
-                    Text(text = "라이딩")
-                    Text(text = "0")
+                    Text(text = "ADS", fontSize = 15.sp)
                 }
-                Divider(modifier = Modifier
-                    .height(50.dp)
-                    .width(1.dp)
-                )
                 Column(
                     modifier = Modifier.weight(1F),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = "KRW")
-                    balance.forEach{
-                        if (it.type == "KRW") {
-                            Text(text = it.amount)
-                        }
-                    }
-                }
-                Divider(modifier = Modifier
-                    .height(50.dp)
-                    .width(1.dp)
-                )
-                Column(
-                    modifier = Modifier.weight(1F),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(text = "ADS")
                     balance.forEach{
                         if (it.type == "ADS") {
-                            Text(text = it.amount)
+                            Text(text = it.amount, fontSize = 15.sp)
                         }
                     }
                 }
             }
+
             Text(
                 modifier = Modifier
                     .clickable {
@@ -307,6 +292,7 @@ fun MyPage(accountViewModel: AccountViewModel = viewModel(), loginViewModel: Log
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun BottomNavigationGraph(navController: NavHostController) {
     NavHost(
@@ -366,3 +352,4 @@ fun BottomNavigation(navController: NavController) {
         }
     }
 }
+

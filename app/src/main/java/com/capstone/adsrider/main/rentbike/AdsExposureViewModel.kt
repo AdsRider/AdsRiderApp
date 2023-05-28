@@ -14,7 +14,6 @@ class AdsExposureViewModel : ViewModel() {
     private val _result = MutableStateFlow<ResultResponse?>(null)
     private val _drivingTime = MutableStateFlow(0)
 
-
     val result get() = _result
     val drivingTime get() = _drivingTime
 

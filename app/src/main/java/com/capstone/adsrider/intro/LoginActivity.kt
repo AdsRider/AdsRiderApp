@@ -2,6 +2,7 @@ package com.capstone.adsrider.intro
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.KeyEvent
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -30,12 +32,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -82,6 +89,7 @@ fun LoginGraph() {
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun LoginView(navController: NavController, loginViewModel: LoginViewModel = viewModel()) {
     val loginState = loginViewModel.loginState.collectAsState().value
@@ -89,6 +97,7 @@ fun LoginView(navController: NavController, loginViewModel: LoginViewModel = vie
     var passwd by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    val (focusRequester) = FocusRequester.createRefs()
 
     if (loginState == "success") {
         loginViewModel.setLoginState("")
@@ -114,9 +123,21 @@ fun LoginView(navController: NavController, loginViewModel: LoginViewModel = vie
         OutlinedTextField(
             value = email,
             singleLine = true,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(
+                onDone = { focusRequester.requestFocus() }
+            ),
             placeholder = { Text(text = "이메일", color = Color.Gray) },
             onValueChange = { email = it },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .onKeyEvent {
+                    if (it.nativeKeyEvent.keyCode == KeyEvent.KEYCODE_ENTER){
+                        focusRequester.requestFocus()
+                        true
+                    }
+                    false
+                },
             leadingIcon = {
                 Icon(painter = painterResource(id = R.drawable.user_info), contentDescription = "email")
             }
@@ -127,7 +148,7 @@ fun LoginView(navController: NavController, loginViewModel: LoginViewModel = vie
             singleLine = true,
             placeholder = { Text(text = "비밀번호", color = Color.Gray) },
             onValueChange = { passwd = it },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             leadingIcon = {
@@ -170,6 +191,7 @@ fun LoginView(navController: NavController, loginViewModel: LoginViewModel = vie
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SignInView(navController: NavController, loginViewModel: LoginViewModel = viewModel()) {
     val signInState = loginViewModel.signInState.collectAsState().value
@@ -177,6 +199,7 @@ fun SignInView(navController: NavController, loginViewModel: LoginViewModel = vi
     var passwd by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    val (focusRequester) = FocusRequester.createRefs()
 
     if (signInState == "success") {
         loginViewModel.setSignInState("")
@@ -204,9 +227,21 @@ fun SignInView(navController: NavController, loginViewModel: LoginViewModel = vi
         OutlinedTextField(
             value = email,
             singleLine = true,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(
+                onDone = { focusRequester.requestFocus() }
+            ),
             placeholder = { Text(text = "이메일", color = Color.Gray) },
             onValueChange = { email = it },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .onKeyEvent {
+                if (it.nativeKeyEvent.keyCode == KeyEvent.KEYCODE_ENTER){
+                    focusRequester.requestFocus()
+                    true
+                }
+                false
+            },
             leadingIcon = {
                 Icon(painter = painterResource(id = R.drawable.user_info), contentDescription = "email")
             }
@@ -217,7 +252,7 @@ fun SignInView(navController: NavController, loginViewModel: LoginViewModel = vi
             singleLine = true,
             placeholder = { Text(text = "비밀번호", color = Color.Gray) },
             onValueChange = { passwd = it },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             leadingIcon = {
