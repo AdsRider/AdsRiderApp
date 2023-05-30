@@ -17,11 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,6 +32,9 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.capstone.adsrider.utility.App
 import com.capstone.adsrider.utility.RidingSharedPreference
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.naver.maps.geometry.LatLng
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -46,14 +45,20 @@ fun AdsExposure(
     navController: NavHostController,
     adsExposureViewModel: AdsExposureViewModel = viewModel()
 ) {
+    var myLocation by remember { mutableStateOf(LatLng(37.3400333, 126.7335056)) }
+    val gson = Gson()
+    val resultData = RidingSharedPreference(App.context()).getRidingPrefs()
     val context = LocalContext.current
     val ticks = adsExposureViewModel.drivingTime.collectAsState().value
     val result = adsExposureViewModel.result.collectAsState().value
+    val path = adsExposureViewModel.path.collectAsState().value
+    val distance = adsExposureViewModel.distance.collectAsState().value
 
     if (ActivityCompat.checkSelfPermission(
             context,
             Manifest.permission.ACCESS_FINE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED) {
+        ) != PackageManager.PERMISSION_GRANTED
+    ) {
         return
     }
 
@@ -65,6 +70,7 @@ fun AdsExposure(
             // 위치가 변경되면 호출되는 콜백
             val speed = location.speed * 3.6f // m/s를 km/h로 변환
             currentSpeed.value = speed.toInt()
+            myLocation = LatLng(location.latitude, location.longitude)
         }
 
         override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
@@ -83,7 +89,6 @@ fun AdsExposure(
         }
     }
     adsExposureViewModel.runDrivingTime()
-    
 
     if (result != null) {
         Dialog(onDismissRequest = {}) {
@@ -152,6 +157,18 @@ fun AdsExposure(
         }
     }
 
+    if (path != null) {
+        val current = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ISO_DATE_TIME
+        resultData.end_time = current.format(formatter)
+        resultData.path = gson.toJson(path)
+        resultData.meters = distance
+        RidingSharedPreference(App.context()).setRidingPrefs(resultData)
+
+        Log.d("최종", resultData.toString())
+        adsExposureViewModel.ridingComplete(resultData)
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -167,14 +184,10 @@ fun AdsExposure(
                 .align(Alignment.Center)
         )
         Button(onClick = {
-            val resultData = RidingSharedPreference(App.context()).getRidingPrefs()
-            val current = LocalDateTime.now()
-            val formatter = DateTimeFormatter.ISO_DATE_TIME
-            resultData.end_time = current.format(formatter)
-            RidingSharedPreference(App.context()).setRidingPrefs(resultData)
-            Log.d("최종", resultData.toString())
-
-            val result = adsExposureViewModel.ridingComplete(resultData)
+            val gson = Gson()
+            val itemType = object : TypeToken<List<LatLng>>() {}.type
+            val pathList = gson.fromJson<List<LatLng>>(resultData.path, itemType)
+            adsExposureViewModel.getPath(pathList[0], myLocation)
         }) {
             Text(text = "주행완료")
         }
@@ -210,8 +223,7 @@ fun AdsExposure(
                 )
                 Text(
                     textAlign = TextAlign.Center,
-                    text = "%02d:%02d:%02d".format(ticks/3600, ticks/60%60, ticks%60)
-                    ,
+                    text = "%02d:%02d:%02d".format(ticks / 3600, ticks / 60 % 60, ticks % 60),
                     fontSize = 20.sp
                 )
             }
