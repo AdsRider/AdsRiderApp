@@ -46,12 +46,6 @@ import com.capstone.adsrider.utility.UserSharedPreference
 import java.text.SimpleDateFormat
 import java.util.Date
 
-val AccountTypeMap = mapOf(
-    "admin_mint" to "관리자",
-    "deposit" to "입금",
-    "withdrawal" to "출금"
-)
-
 @Composable
 fun AccountScreen(accountViewModel: AccountViewModel = viewModel()) {
     val navController = rememberNavController()
@@ -200,7 +194,7 @@ fun AccountScreen(accountViewModel: AccountViewModel = viewModel()) {
                     Row(Modifier.fillMaxWidth()) {
                         TableCell(text = date, weight = column1Weight)
                         TableCell(text = it.amount, weight = column1Weight)
-                        TableCell(text = AccountTypeMap[it.type]!!, weight = column2Weight)
+                        TableCell(text = it.type, weight = column2Weight)
                     }
                 }
             }

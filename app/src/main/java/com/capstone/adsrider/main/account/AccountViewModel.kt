@@ -21,12 +21,11 @@ class AccountViewModel : ViewModel() {
     val history get() = _history
 
     private val _hash = MutableStateFlow("")
-    val hash get() = _history
 
     fun getBalance() {
         viewModelScope.launch {
             try {
-                _balance.value = adsRiderService.getBalance()!!
+                _balance.value = adsRiderService.getBalance()
             } catch (e: HttpException) {
                 Log.d("balance_err", e.toString())
             }
@@ -40,7 +39,7 @@ class AccountViewModel : ViewModel() {
     fun getHistory() {
         viewModelScope.launch {
             try {
-                _history.value = adsRiderService.getHistory()!!
+                _history.value = adsRiderService.getHistory()
             } catch (e: HttpException) {
                 Log.d("history_err", e.toString())
             }
@@ -50,7 +49,7 @@ class AccountViewModel : ViewModel() {
     fun withdrawal(to: String, amount: String) {
         viewModelScope.launch {
             try {
-                _hash.value = adsRiderService.withdrawal(to, amount)!!
+                _hash.value = adsRiderService.withdrawal(to, amount)
                 Log.d("withdrawal_success", _hash.value)
             } catch (e: HttpException) {
                 Log.d("withdrawal_err", e.toString())
