@@ -1,7 +1,6 @@
 package com.capstone.adsrider.main.account
 
 import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,11 +11,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Card
+import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.RadioButton
 import androidx.compose.material.Scaffold
@@ -165,37 +167,39 @@ fun AccountScreen(accountViewModel: AccountViewModel = viewModel()) {
 
     @Composable
     fun HistoryScreen() {
-        Column(
-            modifier = Modifier
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
+        LazyColumn(
+            Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
         ) {
-            Spacer(modifier = Modifier.height(30.dp))
-            LazyColumn(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                val column1Weight = .3f // 40%
-                val column2Weight = .2f // 20%
+            items(history) {
+                val sdf = SimpleDateFormat("yyyy-MM-dd kk:mm:ss")
+                val netDate = Date(it.timestamp)
+                val date = sdf.format(netDate)
 
-                item {
-                    Row(Modifier.background(Color.LightGray)) {
-                        TableCell(text = "날짜", weight = column1Weight)
-                        TableCell(text = "금액", weight = column1Weight)
-                        TableCell(text = "입/출금", weight = column2Weight)
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)) {
+                    Text(text = "${date}\n")
+                    Text(text = it.type, style = MaterialTheme.typography.h5)
+                    if (it.type == "이용권구매") {
+                        Text(
+                            text = "출금 ${it.amount} ADS",
+                            color = Color.Red,
+                            fontSize = 16.sp,
+                            modifier = Modifier.fillMaxWidth().wrapContentWidth(Alignment.End)
+                        )
                     }
-                }
-                items(history) {
-                    val sdf = SimpleDateFormat("yyyy-MM-dd")
-                    val netDate = Date(it.timestamp)
-                    val date = sdf.format(netDate)
-
-                    Row(Modifier.fillMaxWidth()) {
-                        TableCell(text = date, weight = column1Weight)
-                        TableCell(text = it.amount, weight = column1Weight)
-                        TableCell(text = it.type, weight = column2Weight)
+                    else {
+                        Text(
+                            text = "입금 ${it.amount} ADS",
+                            color = Color.Blue,
+                            fontSize = 16.sp,
+                            modifier = Modifier.fillMaxWidth().wrapContentWidth(Alignment.End)
+                        )
                     }
+                    Divider(Modifier.fillMaxWidth().padding(top = 16.dp), thickness = 3.dp)
                 }
             }
         }

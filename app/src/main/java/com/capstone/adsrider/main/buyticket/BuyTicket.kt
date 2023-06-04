@@ -161,7 +161,7 @@ fun BuyTicketScreen(buyTicketViewModel: BuyTicketViewModel = viewModel()) {
                     )
                     Spacer(modifier = Modifier.height(30.dp))
                     Text(
-                        text = "결제 금액   70,000 ADS",
+                        text = "결제 금액   7,000 ADS",
                         color = Color.White,
                         fontSize = 25.sp,
                         modifier = Modifier.fillMaxWidth(),

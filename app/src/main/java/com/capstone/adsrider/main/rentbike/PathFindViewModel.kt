@@ -1,5 +1,6 @@
 package com.capstone.adsrider.main.rentbike
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.capstone.adsrider.model.NaverPlace
@@ -33,6 +34,9 @@ class PathFindViewModel : ViewModel() {
             val destinationParam = destination.let {
                 "${it.x},${it.y},name=${it.title},placeid=${it.cid}"
             }
+
+            Log.d("start", startParam)
+            Log.d("destination", destinationParam)
 
             val pathData = naverService.getPath(startParam, destinationParam)!!
 
