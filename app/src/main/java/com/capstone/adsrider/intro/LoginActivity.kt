@@ -10,6 +10,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,6 +24,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.RadioButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -198,6 +200,7 @@ fun SignInView(navController: NavController, loginViewModel: LoginViewModel = vi
     var email by remember { mutableStateOf("") }
     var passwd by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
+    var type by remember { mutableStateOf("") }
     val context = LocalContext.current
     val (focusRequester) = FocusRequester.createRefs()
 
@@ -223,7 +226,24 @@ fun SignInView(navController: NavController, loginViewModel: LoginViewModel = vi
             color = colorResource(id = R.color.dark_blue),
             text = "회원가입"
         )
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(20.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            RadioButton(
+                selected = type == "라이더",
+                onClick = {
+                    type = "라이더"
+                }
+            )
+            Text("라이더")
+            RadioButton(
+                selected = type == "광고주",
+                onClick = {
+                    type = "광고주"
+                }
+            )
+            Text("광고주")
+        }
+        Spacer(modifier = Modifier.height(10.dp))
         OutlinedTextField(
             value = email,
             singleLine = true,
@@ -266,7 +286,7 @@ fun SignInView(navController: NavController, loginViewModel: LoginViewModel = vi
                 }
             }
         )
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(30.dp))
         Button(
             modifier = Modifier
                 .fillMaxWidth()
@@ -276,7 +296,7 @@ fun SignInView(navController: NavController, loginViewModel: LoginViewModel = vi
                 contentColor = Color.White
             ),
             onClick = {
-                loginViewModel.signin(email, passwd)
+                loginViewModel.signin(type, email, passwd)
             }
         ) {
             Text(

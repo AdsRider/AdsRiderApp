@@ -28,11 +28,11 @@ object AdsRiderObject {
 
 class AdsRiderService {
     suspend fun login(email: String, password: String) = AdsRiderObject.retrofitService.login(
-        LoginBody(email, password)
+        LoginBody(null, email, password),
     )
 
-    suspend fun signIn(email: String, password: String) = AdsRiderObject.retrofitService.signin(
-        LoginBody(email, password)
+    suspend fun signIn(level: String, email: String, password: String) = AdsRiderObject.retrofitService.signin(
+        LoginBody(level, email, password),
     )
     suspend fun logout() = AdsRiderObject.retrofitService.logout()
 
@@ -45,7 +45,7 @@ class AdsRiderService {
     suspend fun getAdsList() = AdsRiderObject.retrofitService.getAdsList()
 
     suspend fun withdrawal(to: String, amount: String) = AdsRiderObject.retrofitService.withdrawal(
-        WithdrawalBody(to, amount)
+        WithdrawalBody(to, amount),
     )
 
     suspend fun ridingComplete(body: ResultBody) = AdsRiderObject.retrofitService.adsResult(body)

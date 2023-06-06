@@ -14,12 +14,12 @@ interface AdsRiderInterface {
 
     @POST("user/withdrawal")
     suspend fun withdrawal(
-        @Body withdrawalBody: WithdrawalBody
+        @Body withdrawalBody: WithdrawalBody,
     ): String
 
     @POST("ads/result")
     suspend fun adsResult(
-        @Body resultBody: ResultBody
+        @Body resultBody: ResultBody,
     ): ResultResponse
 
     @GET("user/me")
@@ -27,12 +27,12 @@ interface AdsRiderInterface {
 
     @POST("user/signin")
     suspend fun signin(
-        @Body loginBody: LoginBody
+        @Body loginBody: LoginBody,
     ): User
 
     @POST("user/login")
     suspend fun login(
-        @Body loginBody: LoginBody
+        @Body loginBody: LoginBody,
     ): User
 
     @GET("user/logout")
@@ -43,6 +43,6 @@ interface AdsRiderInterface {
 
     @POST("user/buyticket")
     suspend fun buyTicket(
-        @Body buyTicketBody: buyTicketBody
+        @Body buyTicketBody: buyTicketBody,
     ): User
 }

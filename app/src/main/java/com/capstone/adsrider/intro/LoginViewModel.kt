@@ -55,10 +55,10 @@ class LoginViewModel : ViewModel() {
             }
         }
     }
-    fun signin(email: String, passwd: String) {
+    fun signin(type: String, email: String, passwd: String) {
         viewModelScope.launch {
             try {
-                adsRiderService.signIn(email, passwd)
+                adsRiderService.signIn(type, email, passwd)
                 _signInState.value = "success"
             } catch (e: HttpException) {
                 Log.d("login_error", e.toString())
