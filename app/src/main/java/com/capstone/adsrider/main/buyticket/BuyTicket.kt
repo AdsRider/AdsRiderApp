@@ -64,18 +64,18 @@ fun BuyTicketScreen(buyTicketViewModel: BuyTicketViewModel = viewModel()) {
             modifier = Modifier
                 .fillMaxSize(),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(40.dp)
-                    .height(450.dp)
+                    .height(420.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(colorResource(R.color.light_blue))
+                    .background(colorResource(R.color.light_blue)),
             ) {
                 Column(
-                    Modifier.align(Alignment.Center)
+                    Modifier.align(Alignment.Center),
                 ) {
                     Text(
                         text = "1년권",
@@ -84,7 +84,7 @@ fun BuyTicketScreen(buyTicketViewModel: BuyTicketViewModel = viewModel()) {
                         fontFamily = FontFamily.Monospace,
                         color = Color.White,
                         modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
                     )
                     Spacer(modifier = Modifier.height(60.dp))
                     Text(
@@ -92,7 +92,7 @@ fun BuyTicketScreen(buyTicketViewModel: BuyTicketViewModel = viewModel()) {
                         color = Color.White,
                         fontSize = 25.sp,
                         modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
                     )
                     Spacer(modifier = Modifier.height(30.dp))
                     Text(
@@ -100,24 +100,25 @@ fun BuyTicketScreen(buyTicketViewModel: BuyTicketViewModel = viewModel()) {
                         color = Color.White,
                         fontSize = 25.sp,
                         modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             Button(
                 modifier = Modifier.width(280.dp),
                 shape = RoundedCornerShape(24.dp),
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = colorResource(R.color.dark_blue)
+                    backgroundColor = colorResource(R.color.dark_blue),
                 ),
                 onClick = {
-
-                }) {
+                    buyTicketViewModel.buyTicket(365)
+                },
+            ) {
                 Text(
                     text = "구매하기",
                     fontSize = 25.sp,
-                    color = Color.White
+                    color = Color.White,
                 )
             }
         }
@@ -129,18 +130,18 @@ fun BuyTicketScreen(buyTicketViewModel: BuyTicketViewModel = viewModel()) {
             modifier = Modifier
                 .fillMaxSize(),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(40.dp)
-                    .height(450.dp)
+                    .height(420.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(colorResource(R.color.light_blue))
+                    .background(colorResource(R.color.light_blue)),
             ) {
                 Column(
-                    Modifier.align(Alignment.Center)
+                    Modifier.align(Alignment.Center),
                 ) {
                     Text(
                         text = "1달권",
@@ -149,7 +150,7 @@ fun BuyTicketScreen(buyTicketViewModel: BuyTicketViewModel = viewModel()) {
                         fontFamily = FontFamily.Monospace,
                         color = Color.White,
                         modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
                     )
                     Spacer(modifier = Modifier.height(60.dp))
                     Text(
@@ -157,7 +158,7 @@ fun BuyTicketScreen(buyTicketViewModel: BuyTicketViewModel = viewModel()) {
                         color = Color.White,
                         fontSize = 25.sp,
                         modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
                     )
                     Spacer(modifier = Modifier.height(30.dp))
                     Text(
@@ -165,24 +166,25 @@ fun BuyTicketScreen(buyTicketViewModel: BuyTicketViewModel = viewModel()) {
                         color = Color.White,
                         fontSize = 25.sp,
                         modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             Button(
                 modifier = Modifier.width(280.dp),
                 shape = RoundedCornerShape(24.dp),
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = colorResource(R.color.dark_blue)
+                    backgroundColor = colorResource(R.color.dark_blue),
                 ),
                 onClick = {
-
-                }) {
+                    buyTicketViewModel.buyTicket(30)
+                },
+            ) {
                 Text(
                     text = "구매하기",
                     fontSize = 25.sp,
-                    color = Color.White
+                    color = Color.White,
                 )
             }
         }
@@ -194,18 +196,18 @@ fun BuyTicketScreen(buyTicketViewModel: BuyTicketViewModel = viewModel()) {
             modifier = Modifier
                 .fillMaxSize(),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(40.dp)
-                    .height(450.dp)
+                    .height(420.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(colorResource(R.color.light_blue))
+                    .background(colorResource(R.color.light_blue)),
             ) {
                 Column(
-                    Modifier.align(Alignment.Center)
+                    Modifier.align(Alignment.Center),
                 ) {
                     Text(
                         text = "1일권",
@@ -214,7 +216,7 @@ fun BuyTicketScreen(buyTicketViewModel: BuyTicketViewModel = viewModel()) {
                         fontFamily = FontFamily.Monospace,
                         color = Color.White,
                         modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
                     )
                     Spacer(modifier = Modifier.height(60.dp))
                     Text(
@@ -222,7 +224,7 @@ fun BuyTicketScreen(buyTicketViewModel: BuyTicketViewModel = viewModel()) {
                         color = Color.White,
                         fontSize = 25.sp,
                         modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
                     )
                     Spacer(modifier = Modifier.height(30.dp))
                     Text(
@@ -230,24 +232,25 @@ fun BuyTicketScreen(buyTicketViewModel: BuyTicketViewModel = viewModel()) {
                         color = Color.White,
                         fontSize = 25.sp,
                         modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             Button(
                 modifier = Modifier.width(280.dp),
                 shape = RoundedCornerShape(24.dp),
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = colorResource(R.color.dark_blue)
+                    backgroundColor = colorResource(R.color.dark_blue),
                 ),
                 onClick = {
-
-                }) {
+                    buyTicketViewModel.buyTicket(1)
+                },
+            ) {
                 Text(
                     text = "구매하기",
                     fontSize = 25.sp,
-                    color = Color.White
+                    color = Color.White,
                 )
             }
         }
@@ -257,7 +260,7 @@ fun BuyTicketScreen(buyTicketViewModel: BuyTicketViewModel = viewModel()) {
     fun TicketNavigationGraph(navController: NavHostController) {
         NavHost(
             navController = navController,
-            startDestination = TicketTabItem.Day.screenRoute
+            startDestination = TicketTabItem.Day.screenRoute,
         ) {
             composable(TicketTabItem.Day.screenRoute) {
                 DayTicketScreen()
@@ -277,12 +280,12 @@ fun BuyTicketScreen(buyTicketViewModel: BuyTicketViewModel = viewModel()) {
         val items = listOf(
             TicketTabItem.Day,
             TicketTabItem.Month,
-            TicketTabItem.Year
+            TicketTabItem.Year,
         )
         TabRow(
             selectedTabIndex = state,
             modifier = Modifier.height(60.dp),
-            backgroundColor = Color.White
+            backgroundColor = Color.White,
         ) {
             items.forEachIndexed { index, item ->
                 Tab(
@@ -290,7 +293,7 @@ fun BuyTicketScreen(buyTicketViewModel: BuyTicketViewModel = viewModel()) {
                         Text(
                             text = item.term,
                             fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
                         )
                     },
                     selected = state == index,
@@ -303,14 +306,14 @@ fun BuyTicketScreen(buyTicketViewModel: BuyTicketViewModel = viewModel()) {
                             launchSingleTop = true
                             restoreState = true
                         }
-                    }
+                    },
                 )
             }
         }
     }
 
     Scaffold(
-        topBar = { TicketNavigation(navController = navController) }
+        topBar = { TicketNavigation(navController = navController) },
     ) {
         Box(Modifier.padding(it)) {
             TicketNavigationGraph(navController = navController)
