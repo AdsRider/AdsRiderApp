@@ -43,20 +43,21 @@ import java.time.format.DateTimeFormatter
 fun AdsExposure(
     imageId: Int,
     navController: NavHostController,
-    adsExposureViewModel: AdsExposureViewModel = viewModel()
+    adsExposureViewModel: AdsExposureViewModel = viewModel(),
 ) {
     var myLocation by remember { mutableStateOf(LatLng(37.3400333, 126.7335056)) }
     val gson = Gson()
     val resultData = RidingSharedPreference(App.context()).getRidingPrefs()
     val context = LocalContext.current
-    val ticks = adsExposureViewModel.drivingTime.collectAsState().value
+    // val ticks = adsExposureViewModel.drivingTime.collectAsState().value
     val result = adsExposureViewModel.result.collectAsState().value
     val path = adsExposureViewModel.path.collectAsState().value
     val distance = adsExposureViewModel.distance.collectAsState().value
+    Log.d("result", result.toString())
 
     if (ActivityCompat.checkSelfPermission(
             context,
-            Manifest.permission.ACCESS_FINE_LOCATION
+            Manifest.permission.ACCESS_FINE_LOCATION,
         ) != PackageManager.PERMISSION_GRANTED
     ) {
         return
@@ -88,7 +89,7 @@ fun AdsExposure(
             locationManager.removeUpdates(locationListener)
         }
     }
-    adsExposureViewModel.runDrivingTime()
+    // adsExposureViewModel.runDrivingTime()
 
     if (result != null) {
         Dialog(onDismissRequest = {}) {
@@ -97,13 +98,13 @@ fun AdsExposure(
                     .height(500.dp)
                     .wrapContentHeight(),
                 shape = RoundedCornerShape(12.dp),
-                color = Color.White
+                color = Color.White,
             ) {
                 Column {
                     Spacer(
                         modifier = Modifier
                             .height(12.dp)
-                            .fillMaxWidth()
+                            .fillMaxWidth(),
                     )
                     Text(
                         "리워드 지급",
@@ -113,12 +114,12 @@ fun AdsExposure(
                             .wrapContentSize()
                             .padding(vertical = 8.dp),
                         fontSize = 16.sp,
-                        lineHeight = 17.sp
+                        lineHeight = 17.sp,
                     )
                     Spacer(
                         modifier = Modifier
                             .height(10.dp)
-                            .fillMaxWidth()
+                            .fillMaxWidth(),
                     )
                     Text(
                         "ads 코인 ${result.reward} 개 지급",
@@ -127,12 +128,12 @@ fun AdsExposure(
                             .fillMaxWidth()
                             .wrapContentSize()
                             .padding(vertical = 8.dp),
-                        fontSize = 13.sp
+                        fontSize = 13.sp,
                     )
                     Spacer(
                         modifier = Modifier
                             .height(10.dp)
-                            .fillMaxWidth()
+                            .fillMaxWidth(),
                     )
                     Button(
                         onClick = {
@@ -143,21 +144,21 @@ fun AdsExposure(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 20.dp),
-                        shape = RoundedCornerShape(24.dp)
+                        shape = RoundedCornerShape(24.dp),
                     ) {
                         Text("확인", fontSize = 16.sp)
                     }
                     Spacer(
                         modifier = Modifier
                             .height(12.dp)
-                            .fillMaxWidth()
+                            .fillMaxWidth(),
                     )
                 }
             }
         }
     }
 
-    if (path != null) {
+    if (result == null && distance != 0) {
         val current = LocalDateTime.now()
         val formatter = DateTimeFormatter.ISO_DATE_TIME
         resultData.end_time = current.format(formatter)
@@ -174,14 +175,14 @@ fun AdsExposure(
             .fillMaxSize()
             .background(color = Color.LightGray)
             .padding(16.dp)
-            .offset(y = (-30).dp)
+            .offset(y = (-30).dp),
     ) {
         Image(
             painter = rememberAsyncImagePainter("https://adsrider.wo.tc/api/image/$imageId}"),
             contentDescription = "Ads Design",
             modifier = Modifier
                 .width(300.dp)
-                .align(Alignment.Center)
+                .align(Alignment.Center),
         )
         Button(onClick = {
             val gson = Gson()
@@ -195,37 +196,37 @@ fun AdsExposure(
             modifier = Modifier
                 .background(Color.White)
                 .width(300.dp)
-                .align(Alignment.BottomCenter)
+                .align(Alignment.BottomCenter),
         ) {
             Column(
                 modifier = Modifier.weight(1F),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
                     color = Color.LightGray,
                     textAlign = TextAlign.Center,
-                    text = "주행속도"
+                    text = "주행속도",
                 )
                 Text(
                     textAlign = TextAlign.Center,
                     text = "%dkm/h".format(currentSpeed.value),
-                    fontSize = 20.sp
+                    fontSize = 20.sp,
                 )
             }
             Column(
                 modifier = Modifier.weight(1F),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
                     color = Color.LightGray,
                     textAlign = TextAlign.Center,
-                    text = "주행시간"
+                    text = "주행시간",
                 )
-                Text(
-                    textAlign = TextAlign.Center,
-                    text = "%02d:%02d:%02d".format(ticks / 3600, ticks / 60 % 60, ticks % 60),
-                    fontSize = 20.sp
-                )
+//                Text(
+//                    textAlign = TextAlign.Center,
+//                    text = "%02d:%02d:%02d".format(ticks / 3600, ticks / 60 % 60, ticks % 60),
+//                    fontSize = 20.sp,
+//                )
             }
         }
     }
