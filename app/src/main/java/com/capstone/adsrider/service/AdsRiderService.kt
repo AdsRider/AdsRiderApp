@@ -1,6 +1,7 @@
 package com.capstone.adsrider.service
 
 import com.capstone.adsrider.model.LoginBody
+import com.capstone.adsrider.model.PurchaseCoinBody
 import com.capstone.adsrider.model.ResultBody
 import com.capstone.adsrider.model.WithdrawalBody
 import com.capstone.adsrider.model.buyTicketBody
@@ -45,6 +46,10 @@ class AdsRiderService {
     suspend fun getAdsList() = AdsRiderObject.retrofitService.getAdsList()
 
     suspend fun getStatistic(from: String, to: String) = AdsRiderObject.retrofitService.getStatistic(from, to)
+    
+    suspend fun purchaseCoin(amount: String) = AdsRiderObject.retrofitService.purchaseCoin(
+        PurchaseCoinBody(paymentType = "", orderId = "", paymentKey = "", amount = amount),
+    )
 
     suspend fun withdrawal(to: String, amount: String) = AdsRiderObject.retrofitService.withdrawal(
         WithdrawalBody(to, amount),

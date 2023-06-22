@@ -18,6 +18,11 @@ interface AdsRiderInterface {
         @Body withdrawalBody: WithdrawalBody,
     ): String
 
+    @POST("payment/success")
+    suspend fun purchaseCoin(
+        @Body purchaseCoinBody: PurchaseCoinBody,
+    ): Balance
+
     @POST("ads/result")
     suspend fun adsResult(
         @Body resultBody: ResultBody,
