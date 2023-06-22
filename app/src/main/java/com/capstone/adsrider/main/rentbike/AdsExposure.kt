@@ -1,8 +1,11 @@
 package com.capstone.adsrider.main.rentbike
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -21,6 +24,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -49,6 +53,7 @@ fun AdsExposure(
     val gson = Gson()
     val resultData = RidingSharedPreference(App.context()).getRidingPrefs()
     val context = LocalContext.current
+    val activity = context as Activity
     // val ticks = adsExposureViewModel.drivingTime.collectAsState().value
     val result = adsExposureViewModel.result.collectAsState().value
     val path = adsExposureViewModel.path.collectAsState().value
@@ -77,6 +82,20 @@ fun AdsExposure(
         override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
     }
 
+    val configuration = LocalConfiguration.current
+    if (result == null) {
+        when (configuration.orientation) {
+            Configuration.ORIENTATION_LANDSCAPE -> {
+                Log.d("방향", "Landscape")
+            }
+
+            else -> {
+                Log.d("방향", "Portrait")
+                activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            }
+        }
+    }
+
     DisposableEffect(Unit) {
         // Composable이 나타날 때 위치 업데이트 리스너를 등록
         val minTime = 1000L // 위치 업데이트 간격(ms)
@@ -92,6 +111,7 @@ fun AdsExposure(
     // adsExposureViewModel.runDrivingTime()
 
     if (result != null) {
+        activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         Dialog(onDismissRequest = {}) {
             Surface(
                 modifier = Modifier
@@ -174,14 +194,13 @@ fun AdsExposure(
         modifier = Modifier
             .fillMaxSize()
             .background(color = Color.LightGray)
-            .padding(16.dp)
-            .offset(y = (-30).dp),
+            .padding(16.dp),
     ) {
         Image(
             painter = rememberAsyncImagePainter("https://adsrider.wo.tc/api/image/$imageId}"),
             contentDescription = "Ads Design",
             modifier = Modifier
-                .width(300.dp)
+                .fillMaxSize()
                 .align(Alignment.Center),
         )
         Button(onClick = {
@@ -192,42 +211,42 @@ fun AdsExposure(
         }) {
             Text(text = "주행완료")
         }
-        Row(
-            modifier = Modifier
-                .background(Color.White)
-                .width(300.dp)
-                .align(Alignment.BottomCenter),
-        ) {
-            Column(
-                modifier = Modifier.weight(1F),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(
-                    color = Color.LightGray,
-                    textAlign = TextAlign.Center,
-                    text = "주행속도",
-                )
-                Text(
-                    textAlign = TextAlign.Center,
-                    text = "%dkm/h".format(currentSpeed.value),
-                    fontSize = 20.sp,
-                )
-            }
-            Column(
-                modifier = Modifier.weight(1F),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(
-                    color = Color.LightGray,
-                    textAlign = TextAlign.Center,
-                    text = "주행시간",
-                )
+//        Row(
+//            modifier = Modifier
+//                .background(Color.White)
+//                .width(300.dp)
+//                .align(Alignment.BottomCenter),
+//        ) {
+//            Column(
+//                modifier = Modifier.weight(1F),
+//                horizontalAlignment = Alignment.CenterHorizontally,
+//            ) {
+//                Text(
+//                    color = Color.LightGray,
+//                    textAlign = TextAlign.Center,
+//                    text = "주행속도",
+//                )
 //                Text(
 //                    textAlign = TextAlign.Center,
-//                    text = "%02d:%02d:%02d".format(ticks / 3600, ticks / 60 % 60, ticks % 60),
+//                    text = "%dkm/h".format(currentSpeed.value),
 //                    fontSize = 20.sp,
 //                )
-            }
-        }
+//            }
+//            Column(
+//                modifier = Modifier.weight(1F),
+//                horizontalAlignment = Alignment.CenterHorizontally,
+//            ) {
+//                Text(
+//                    color = Color.LightGray,
+//                    textAlign = TextAlign.Center,
+//                    text = "주행시간",
+//                )
+////                Text(
+////                    textAlign = TextAlign.Center,
+////                    text = "%02d:%02d:%02d".format(ticks / 3600, ticks / 60 % 60, ticks % 60),
+////                    fontSize = 20.sp,
+////                )
+//            }
+//        }
     }
 }
