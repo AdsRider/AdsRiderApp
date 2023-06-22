@@ -3,6 +3,7 @@ package com.capstone.adsrider.main
 import android.Manifest
 import android.content.Intent
 import android.graphics.Paint
+import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
@@ -54,7 +55,44 @@ import com.capstone.adsrider.main.rentbike.RentBikeScreen
 import com.capstone.adsrider.main.swapcoin.SwapCoinScreen
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
+import com.patrykandpatrick.vico.compose.axis.horizontal.bottomAxis
+import com.patrykandpatrick.vico.compose.axis.vertical.endAxis
+import com.patrykandpatrick.vico.compose.axis.vertical.startAxis
+import com.patrykandpatrick.vico.compose.chart.Chart
+import com.patrykandpatrick.vico.compose.chart.column.columnChart
+import com.patrykandpatrick.vico.compose.chart.line.lineChart
+import com.patrykandpatrick.vico.compose.component.lineComponent
+import com.patrykandpatrick.vico.compose.component.overlayingComponent
+import com.patrykandpatrick.vico.compose.component.shape.roundedCornerShape
+import com.patrykandpatrick.vico.compose.component.shapeComponent
+import com.patrykandpatrick.vico.compose.component.textComponent
+import com.patrykandpatrick.vico.compose.dimensions.dimensionsOf
+import com.patrykandpatrick.vico.compose.legend.verticalLegend
+import com.patrykandpatrick.vico.compose.legend.verticalLegendItem
+import com.patrykandpatrick.vico.compose.style.currentChartStyle
+import com.patrykandpatrick.vico.core.axis.AxisPosition
+import com.patrykandpatrick.vico.core.chart.DefaultPointConnector
+import com.patrykandpatrick.vico.core.chart.composed.plus
+import com.patrykandpatrick.vico.core.chart.copy
+import com.patrykandpatrick.vico.core.chart.insets.Insets
+import com.patrykandpatrick.vico.core.chart.segment.SegmentProperties
+import com.patrykandpatrick.vico.core.component.marker.MarkerComponent
+import com.patrykandpatrick.vico.core.component.shape.DashedShape
+import com.patrykandpatrick.vico.core.component.shape.LineComponent
+import com.patrykandpatrick.vico.core.component.shape.ShapeComponent
+import com.patrykandpatrick.vico.core.component.shape.Shapes
+import com.patrykandpatrick.vico.core.component.shape.cornered.Corner
+import com.patrykandpatrick.vico.core.component.shape.cornered.MarkerCorneredShape
+import com.patrykandpatrick.vico.core.context.MeasureContext
+import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
+import com.patrykandpatrick.vico.core.entry.composed.plus
+import com.patrykandpatrick.vico.core.entry.entriesOf
+import com.patrykandpatrick.vico.core.extension.copyColor
+import com.patrykandpatrick.vico.core.marker.Marker
 import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 class HomeActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -80,7 +118,7 @@ sealed class BottomNavItem(val icon: Int, val screenRoute: String) {
 }
 
 fun convertTimestampToDate(timestamp: Long): String {
-    val sdf = SimpleDateFormat("yyyy년 MM월 dd일까지")
+    val sdf = SimpleDateFormat("yyyy년 MM월 dd일까지", Locale.getDefault())
     return sdf.format(timestamp).toString()
 }
 
@@ -155,12 +193,20 @@ fun HomeScreen() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MyPage(accountViewModel: AccountViewModel = viewModel(), loginViewModel: LoginViewModel = viewModel()) {
+fun MyPage(
+    accountViewModel: AccountViewModel = viewModel(),
+    loginViewModel: LoginViewModel = viewModel(),
+    statisticViewModel: StatisticViewModel = viewModel()
+) {
     val balance = accountViewModel.balance.collectAsState().value
     val user = loginViewModel.user.collectAsState().value
+    val statistic = statisticViewModel.statistic.collectAsState().value
     val logoutState = loginViewModel.logoutState.collectAsState().value
     val context = LocalContext.current
+    val meters = Array(7) { 0 }
+    val reward = Array(7){ 0f }
 
     if (logoutState == "success") {
         loginViewModel.setSignInState("")
@@ -262,7 +308,6 @@ fun MyPage(accountViewModel: AccountViewModel = viewModel(), loginViewModel: Log
                     modifier = Modifier.weight(1F),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    //총 라이딩 횟수
                     Text(text = "ADS", fontSize = 15.sp)
                 }
                 Column(
@@ -276,6 +321,85 @@ fun MyPage(accountViewModel: AccountViewModel = viewModel(), loginViewModel: Log
                     }
                 }
             }
+
+            var today: String
+
+            val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val currentDate = Date()
+            val calendar = Calendar.getInstance()
+            calendar.time = currentDate
+            val toDate = sdf.format(calendar.time)
+            calendar.add(Calendar.DAY_OF_MONTH, -6)
+            val fromDate = sdf.format(calendar.time)
+            statisticViewModel.getStatistic(fromDate, toDate)
+
+            var i = 0
+            statistic.forEach {
+                meters[i] = it.meters
+                reward[i] = it.reward.toFloat()
+                i++
+            }
+
+            val chartEntryModelProducer1 = ChartEntryModelProducer(entriesOf(
+                meters[0], meters[1], meters[2], meters[3],
+                meters[4], meters[5], meters[6])
+            )
+            val chartEntryModelProducer2 = ChartEntryModelProducer(entriesOf(
+                reward[0], reward[1], reward[2], reward[3],
+                reward[4], reward[5], reward[6])
+            )
+
+            val bottomLabel = mutableListOf<String>()
+
+            for (i in 0..6) {
+                today = SimpleDateFormat("MM/dd", Locale.getDefault()).format(calendar.time)
+                bottomLabel += today
+                calendar.add(Calendar.DAY_OF_MONTH, 1)
+            }
+
+            val defaultLines = currentChartStyle.lineChart.lines
+            val defaultColumns = currentChartStyle.columnChart.columns
+
+            val composedChartEntryModelProducer = chartEntryModelProducer1 + chartEntryModelProducer2
+
+            val columnChart = columnChart(
+                remember(defaultColumns) {
+                    defaultColumns.map { defaultColumn ->
+                        LineComponent(
+                            color = android.graphics.Color.RED,
+                            defaultColumn.thicknessDp,
+                            Shapes.roundedCornerShape(2.dp)
+                        )
+                    }
+                },
+                targetVerticalAxisPosition = AxisPosition.Vertical.Start
+            )
+            val lineChart = lineChart(
+                remember(defaultLines) {
+                    defaultLines.map { defaultLine ->
+                        defaultLine.copy(
+                            pointConnector = DefaultPointConnector(cubicStrength = 0f),
+                            lineColor = android.graphics.Color.BLUE,
+                            lineBackgroundShader = null
+                        )
+                    }
+                },
+                targetVerticalAxisPosition = AxisPosition.Vertical.End
+            )
+
+            Chart(
+                modifier = Modifier.height(200.dp),
+                chart = remember(columnChart, lineChart) { columnChart + lineChart },
+                chartModelProducer = composedChartEntryModelProducer,
+                startAxis = startAxis(),
+                endAxis = endAxis(),
+                bottomAxis = bottomAxis(
+                    valueFormatter = { x, _ -> bottomLabel[x.toInt() % bottomLabel.size] }),
+                marker = rememberMarker(),
+                legend = rememberLegend()
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
 
             Text(
                 modifier = Modifier
@@ -291,6 +415,84 @@ fun MyPage(accountViewModel: AccountViewModel = viewModel(), loginViewModel: Log
         }
     }
 }
+
+@Composable
+fun rememberMarker(): Marker {
+    val labelBackgroundColor = androidx.compose.material3.MaterialTheme.colorScheme.surface
+    val labelBackground = remember(labelBackgroundColor) {
+        ShapeComponent(MarkerCorneredShape(Corner.FullyRounded), labelBackgroundColor.toArgb()).setShadow(
+            radius = 4f,
+            dy = 2f,
+            applyElevationOverlay = true
+        )
+    }
+    val label = textComponent(
+        background = labelBackground,
+        lineCount = 1,
+        padding = dimensionsOf(8.dp, 4.dp),
+        typeface = Typeface.MONOSPACE,
+    )
+    val indicatorInnerComponent = shapeComponent(Shapes.pillShape,
+        androidx.compose.material3.MaterialTheme.colorScheme.surface)
+    val indicatorCenterComponent = shapeComponent(Shapes.pillShape, Color.White)
+    val indicatorOuterComponent = shapeComponent(Shapes.pillShape, Color.White)
+    val indicator = overlayingComponent(
+        outer = indicatorOuterComponent,
+        inner = overlayingComponent(
+            outer = indicatorCenterComponent,
+            inner = indicatorInnerComponent,
+            innerPaddingAll = 5.dp,
+        ),
+        innerPaddingAll = 10.dp,
+    )
+    val guideline = lineComponent(
+        androidx.compose.material3.MaterialTheme.colorScheme.onSurface.copy(.2f),
+        2.dp,
+        DashedShape(Shapes.pillShape, 8f, 4f)
+    )
+    return remember(label, indicator, guideline) {
+        object : MarkerComponent(label, indicator, guideline) {
+            init {
+                indicatorSizeDp = 36f
+                onApplyEntryColor = { entryColor ->
+                    indicatorOuterComponent.color = entryColor.copyColor(32)
+                    with(indicatorCenterComponent) {
+                        color = entryColor
+                        setShadow(radius = 12f, color = entryColor)
+                    }
+                }
+            }
+
+            override fun getInsets(context: MeasureContext, outInsets: Insets, segmentProperties: SegmentProperties) =
+                with(context) {
+                    outInsets.top = label.getHeight(context) +
+                        MarkerCorneredShape(Corner.FullyRounded).tickSizeDp.pixels +
+                        4f.pixels * 1.3f - 2f.pixels
+                }
+        }
+    }
+}
+
+val chartColor = listOf(Color.Blue, Color.Red)
+val chartLegend = listOf("리워드 지급", "주행거리")
+@Composable
+private fun rememberLegend() = verticalLegend(
+    items = chartColor.mapIndexed { index, chartColor ->
+        verticalLegendItem(
+            icon = shapeComponent(Shapes.pillShape, chartColor),
+            label = textComponent(
+                color = currentChartStyle.axis.axisLabelColor,
+                textSize = 12.sp,
+                typeface = Typeface.MONOSPACE,
+            ),
+            labelText = chartLegend[index]
+        )
+    },
+    iconSize = 8.dp,
+    iconPadding = 10.dp,
+    spacing = 4.dp,
+    padding = dimensionsOf(top = 8.dp),
+)
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -352,4 +554,3 @@ fun BottomNavigation(navController: NavController) {
         }
     }
 }
-

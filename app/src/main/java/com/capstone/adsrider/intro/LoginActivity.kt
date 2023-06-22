@@ -134,7 +134,7 @@ fun LoginView(navController: NavController, loginViewModel: LoginViewModel = vie
             modifier = Modifier
                 .fillMaxWidth()
                 .onKeyEvent {
-                    if (it.nativeKeyEvent.keyCode == KeyEvent.KEYCODE_ENTER){
+                    if (it.nativeKeyEvent.keyCode == KeyEvent.KEYCODE_ENTER) {
                         focusRequester.requestFocus()
                         true
                     }
@@ -150,7 +150,9 @@ fun LoginView(navController: NavController, loginViewModel: LoginViewModel = vie
             singleLine = true,
             placeholder = { Text(text = "비밀번호", color = Color.Gray) },
             onValueChange = { passwd = it },
-            modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(focusRequester),
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             leadingIcon = {
@@ -256,12 +258,12 @@ fun SignInView(navController: NavController, loginViewModel: LoginViewModel = vi
             modifier = Modifier
                 .fillMaxWidth()
                 .onKeyEvent {
-                if (it.nativeKeyEvent.keyCode == KeyEvent.KEYCODE_ENTER){
-                    focusRequester.requestFocus()
-                    true
-                }
-                false
-            },
+                    if (it.nativeKeyEvent.keyCode == KeyEvent.KEYCODE_ENTER) {
+                        focusRequester.requestFocus()
+                        true
+                    }
+                    false
+                },
             leadingIcon = {
                 Icon(painter = painterResource(id = R.drawable.user_info), contentDescription = "email")
             }
@@ -272,7 +274,9 @@ fun SignInView(navController: NavController, loginViewModel: LoginViewModel = vi
             singleLine = true,
             placeholder = { Text(text = "비밀번호", color = Color.Gray) },
             onValueChange = { passwd = it },
-            modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(focusRequester),
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             leadingIcon = {

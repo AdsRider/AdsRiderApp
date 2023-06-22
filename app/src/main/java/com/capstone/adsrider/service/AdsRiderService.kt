@@ -44,6 +44,8 @@ class AdsRiderService {
 
     suspend fun getAdsList() = AdsRiderObject.retrofitService.getAdsList()
 
+    suspend fun getStatistic(from: String, to: String) = AdsRiderObject.retrofitService.getStatistic(from, to)
+
     suspend fun withdrawal(to: String, amount: String) = AdsRiderObject.retrofitService.withdrawal(
         WithdrawalBody(to, amount),
     )

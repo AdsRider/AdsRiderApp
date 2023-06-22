@@ -183,9 +183,9 @@ fun AccountScreen(accountViewModel: AccountViewModel = viewModel()) {
                         .padding(16.dp)) {
                     Text(text = "${date}\n")
                     Text(text = it.type, style = MaterialTheme.typography.h5)
-                    if (it.type == "이용권구매") {
+                    if (it.amount.contains("-")) {
                         Text(
-                            text = "출금 ${it.amount} ADS",
+                            text = "출금 ${it.amount.replace("-","")} ADS",
                             color = Color.Red,
                             fontSize = 16.sp,
                             modifier = Modifier.fillMaxWidth().wrapContentWidth(Alignment.End)
