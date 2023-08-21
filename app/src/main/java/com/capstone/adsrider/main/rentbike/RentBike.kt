@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -129,6 +130,7 @@ fun QRScanner(navController: NavHostController, loginViewModel: LoginViewModel =
                     Text(
                         "이용권 필요",
                         textAlign = TextAlign.Center,
+                        fontFamily = FontFamily.Serif,
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentSize()
@@ -289,7 +291,7 @@ fun QRScanner(navController: NavHostController, loginViewModel: LoginViewModel =
                 Button(
                     onClick = { state = false },
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = colorResource(R.color.dark_blue)
+                        backgroundColor = colorResource(R.color.light_blue)
                     )) {
                     Text("취소", color = Color.White)
                 }

@@ -1,7 +1,9 @@
 package com.capstone.adsrider.main.buyticket
 
 import android.widget.Toast
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,25 +12,22 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Tab
-import androidx.compose.material.TabRow
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontFamily
@@ -37,18 +36,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.capstone.adsrider.R
 
 @Composable
 fun BuyTicketScreen(buyTicketViewModel: BuyTicketViewModel = viewModel()) {
-    val navController = rememberNavController()
     val state = buyTicketViewModel.state.collectAsState().value
     val context = LocalContext.current
+    val pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
+    val stateArray = remember { mutableStateListOf(false, false, false) }
 
     if (state == "success") {
         Toast.makeText(context, "구매 완료", Toast.LENGTH_SHORT).show()
@@ -58,271 +53,236 @@ fun BuyTicketScreen(buyTicketViewModel: BuyTicketViewModel = viewModel()) {
         buyTicketViewModel.setState("")
     }
 
-    @Composable
-    fun YearTicketScreen() {
-        Column(
-            modifier = Modifier
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(40.dp)
-                    .height(420.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(colorResource(R.color.light_blue)),
-            ) {
-                Column(
-                    Modifier.align(Alignment.Center),
-                ) {
-                    Text(
-                        text = "1년권",
-                        style = MaterialTheme.typography.h2,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = FontFamily.Monospace,
-                        color = Color.White,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                    )
-                    Spacer(modifier = Modifier.height(60.dp))
-                    Text(
-                        text = "365일 이용 기한 추가",
-                        color = Color.White,
-                        fontSize = 25.sp,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                    )
-                    Spacer(modifier = Modifier.height(30.dp))
-                    Text(
-                        text = "결제 금액   30,000 ADS",
-                        color = Color.White,
-                        fontSize = 25.sp,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.height(10.dp))
-            Button(
-                modifier = Modifier.width(280.dp),
-                shape = RoundedCornerShape(24.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = colorResource(R.color.dark_blue),
-                ),
-                onClick = {
-                    buyTicketViewModel.buyTicket(365)
-                },
-            ) {
-                Text(
-                    text = "구매하기",
-                    fontSize = 25.sp,
-                    color = Color.White,
-                )
-            }
-        }
-    }
-
-    @Composable
-    fun MonthTicketScreen() {
-        Column(
-            modifier = Modifier
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(40.dp)
-                    .height(420.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(colorResource(R.color.light_blue)),
-            ) {
-                Column(
-                    Modifier.align(Alignment.Center),
-                ) {
-                    Text(
-                        text = "1달권",
-                        style = MaterialTheme.typography.h2,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = FontFamily.Monospace,
-                        color = Color.White,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                    )
-                    Spacer(modifier = Modifier.height(60.dp))
-                    Text(
-                        text = "30일 이용 기한 추가",
-                        color = Color.White,
-                        fontSize = 25.sp,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                    )
-                    Spacer(modifier = Modifier.height(30.dp))
-                    Text(
-                        text = "결제 금액   7,000 ADS",
-                        color = Color.White,
-                        fontSize = 25.sp,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.height(10.dp))
-            Button(
-                modifier = Modifier.width(280.dp),
-                shape = RoundedCornerShape(24.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = colorResource(R.color.dark_blue),
-                ),
-                onClick = {
-                    buyTicketViewModel.buyTicket(30)
-                },
-            ) {
-                Text(
-                    text = "구매하기",
-                    fontSize = 25.sp,
-                    color = Color.White,
-                )
-            }
-        }
-    }
-
-    @Composable
-    fun DayTicketScreen() {
-        Column(
-            modifier = Modifier
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(40.dp)
-                    .height(420.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(colorResource(R.color.light_blue)),
-            ) {
-                Column(
-                    Modifier.align(Alignment.Center),
-                ) {
-                    Text(
-                        text = "1일권",
-                        style = MaterialTheme.typography.h2,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = FontFamily.Monospace,
-                        color = Color.White,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                    )
-                    Spacer(modifier = Modifier.height(60.dp))
-                    Text(
-                        text = "1일 이용 기한 추가",
-                        color = Color.White,
-                        fontSize = 25.sp,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                    )
-                    Spacer(modifier = Modifier.height(30.dp))
-                    Text(
-                        text = "결제 금액   2,000 ADS",
-                        color = Color.White,
-                        fontSize = 25.sp,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.height(10.dp))
-            Button(
-                modifier = Modifier.width(280.dp),
-                shape = RoundedCornerShape(24.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = colorResource(R.color.dark_blue),
-                ),
-                onClick = {
-                    buyTicketViewModel.buyTicket(1)
-                },
-            ) {
-                Text(
-                    text = "구매하기",
-                    fontSize = 25.sp,
-                    color = Color.White,
-                )
-            }
-        }
-    }
-
-    @Composable
-    fun TicketNavigationGraph(navController: NavHostController) {
-        NavHost(
-            navController = navController,
-            startDestination = TicketTabItem.Day.screenRoute,
-        ) {
-            composable(TicketTabItem.Day.screenRoute) {
-                DayTicketScreen()
-            }
-            composable(TicketTabItem.Month.screenRoute) {
-                MonthTicketScreen()
-            }
-            composable(TicketTabItem.Year.screenRoute) {
-                YearTicketScreen()
-            }
-        }
-    }
-
-    @Composable
-    fun TicketNavigation(navController: NavController) {
-        var state by remember { mutableStateOf(0) }
-        val items = listOf(
-            TicketTabItem.Day,
-            TicketTabItem.Month,
-            TicketTabItem.Year,
-        )
-        TabRow(
-            selectedTabIndex = state,
-            modifier = Modifier.height(60.dp),
-            backgroundColor = Color.White,
-        ) {
-            items.forEachIndexed { index, item ->
-                Tab(
-                    text = {
-                        Text(
-                            text = item.term,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                        )
-                    },
-                    selected = state == index,
-                    onClick = {
-                        state = index
-                        navController.navigate(item.screenRoute) {
-                            navController.graph.startDestinationRoute?.let {
-                                popUpTo(it) { saveState = true }
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    },
-                )
-            }
-        }
-    }
-
-    Scaffold(
-        topBar = { TicketNavigation(navController = navController) },
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(20.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Box(Modifier.padding(it)) {
-            TicketNavigationGraph(navController = navController)
+        Text(
+            text = "이용권 구매",
+            fontSize = 30.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .padding(horizontal = 15.dp, vertical = 20.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(colorResource(R.color.light_blue))
+                .clickable { stateArray[0] = true }
+        ) {
+            Column(
+                Modifier.align(Alignment.Center).padding(20.dp)
+            ) {
+                Text(
+                    text = "1일권",
+                    style = MaterialTheme.typography.h4,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.Monospace,
+                    color = Color.White,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(
+                    text = "1일 이용 기한 추가",
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                )
+                Text(
+                    text = "결제 금액   2,000 ADS",
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                )
+            }
+        }
+        Canvas(Modifier.fillMaxWidth().height(1.dp).padding(horizontal = 30.dp)) {
+            drawLine(
+                color = Color.Gray,
+                start = Offset(0f, 0f),
+                end = Offset(size.width, 0f),
+                strokeWidth = 5.0f,
+                pathEffect = pathEffect
+            )
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .padding(horizontal = 15.dp, vertical = 20.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(colorResource(R.color.light_blue))
+                .clickable { stateArray[1] = true }
+        ) {
+            Column(
+                Modifier.align(Alignment.Center).padding(20.dp),
+            ) {
+                Text(
+                    text = "1달권",
+                    style = MaterialTheme.typography.h4,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.Monospace,
+                    color = Color.White,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(
+                    text = "30일 이용 기한 추가",
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                )
+                Text(
+                    text = "결제 금액   7,000 ADS",
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                )
+            }
+        }
+        Canvas(Modifier.fillMaxWidth().height(1.dp).padding(horizontal = 30.dp)) {
+            drawLine(
+                color = Color.Gray,
+                start = Offset(0f, 0f),
+                end = Offset(size.width, 0f),
+                strokeWidth = 5.0f,
+                pathEffect = pathEffect
+            )
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .padding(horizontal = 15.dp, vertical = 20.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(colorResource(R.color.light_blue))
+                .clickable { stateArray[2] = true }
+        ) {
+            Column(
+                Modifier.align(Alignment.Center).padding(20.dp),
+            ) {
+                Text(
+                    text = "1년권",
+                    style = MaterialTheme.typography.h4,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.Monospace,
+                    color = Color.White,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(
+                    text = "365일 이용 기한 추가",
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                )
+                Text(
+                    text = "결제 금액   30,000 ADS",
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                )
+            }
         }
     }
-}
-
-sealed class TicketTabItem(val term: String, val screenRoute: String) {
-    object Day : TicketTabItem("1일권", "DAY")
-    object Month : TicketTabItem("1달권", "MONTH")
-    object Year : TicketTabItem("1년권", "YEAR")
+    if (stateArray[0]) {
+        AlertDialog(
+            onDismissRequest = { stateArray[0] = false },
+            title = {
+                Text("1일권 구매")
+            },
+            text = {
+                Text("1일권을 구매하시겠습니까?")
+            },
+            confirmButton = {
+                Button(
+                    onClick = { buyTicketViewModel.buyTicket(1) },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = colorResource(R.color.dark_blue)
+                    )
+                ) {
+                    Text("구매", color = Color.White)
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = { stateArray[0] = false },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = colorResource(R.color.light_blue)
+                    )) {
+                    Text("취소", color = Color.White)
+                }
+            }
+        )
+    }
+    if (stateArray[1]) {
+        AlertDialog(
+            onDismissRequest = { stateArray[1] = false },
+            title = {
+                Text("1달권 구매")
+            },
+            text = {
+                Text("1달권을 구매하시겠습니까?")
+            },
+            confirmButton = {
+                Button(
+                    onClick = { buyTicketViewModel.buyTicket(30) },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = colorResource(R.color.dark_blue)
+                    )
+                ) {
+                    Text("구매", color = Color.White)
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = { stateArray[1] = false },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = colorResource(R.color.light_blue)
+                    )) {
+                    Text("취소", color = Color.White)
+                }
+            }
+        )
+    }
+    if (stateArray[2]) {
+        AlertDialog(
+            onDismissRequest = { stateArray[2] = false },
+            title = {
+                Text("1년권 구매")
+            },
+            text = {
+                Text("1년권을 구매하시겠습니까?")
+            },
+            confirmButton = {
+                Button(
+                    onClick = { buyTicketViewModel.buyTicket(365) },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = colorResource(R.color.dark_blue)
+                    )
+                ) {
+                    Text("구매", color = Color.White)
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = { stateArray[2] = false },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = colorResource(R.color.light_blue)
+                    )) {
+                    Text("취소", color = Color.White)
+                }
+            }
+        )
+    }
 }
