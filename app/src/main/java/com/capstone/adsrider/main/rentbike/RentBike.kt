@@ -2,11 +2,9 @@ package com.capstone.adsrider.main.rentbike
 
 import android.Manifest
 import android.content.Intent
-import android.os.Build
 import android.os.SystemClock.sleep
 import android.util.Log
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
@@ -48,11 +46,6 @@ import androidx.compose.ui.window.Dialog
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.capstone.adsrider.R
 import com.capstone.adsrider.intro.LoginViewModel
 import com.capstone.adsrider.main.HomeActivity
@@ -64,38 +57,6 @@ import com.google.common.util.concurrent.ListenableFuture
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun RentBikeScreen() {
-    val navController = rememberNavController()
-
-    NavHost(
-        navController = navController,
-        startDestination = "rent bike"
-    ) {
-        composable("path find") {
-            PathFindScreen(navController = navController)
-        }
-        composable("rent bike") {
-            QRScanner(navController = navController)
-        }
-        composable("ad select") {
-            AdsView(navController = navController)
-        }
-        composable(
-            "ad exposure/{imageId}",
-            arguments = listOf(
-                navArgument("imageId") {
-                    type = NavType.IntType
-                }
-            )
-        ) {
-            val imageId = it.arguments?.getInt("imageId")
-            AdsExposure(imageId!!, navController = navController)
-        }
-    }
-}
-
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun QRScanner(navController: NavHostController, loginViewModel: LoginViewModel = viewModel()) {
@@ -105,7 +66,6 @@ fun QRScanner(navController: NavHostController, loginViewModel: LoginViewModel =
     var preview by remember { mutableStateOf<Preview?>(null) }
     val barCodeVal = remember { mutableStateOf("") }
     var state by remember { mutableStateOf(false) }
-
 
     val locationPermissionState = rememberPermissionState(permission = Manifest.permission.ACCESS_FINE_LOCATION)
     val locationPermissionState2 = rememberPermissionState(permission = Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -119,13 +79,13 @@ fun QRScanner(navController: NavHostController, loginViewModel: LoginViewModel =
                     .height(500.dp)
                     .wrapContentHeight(),
                 shape = RoundedCornerShape(12.dp),
-                color = Color.White
+                color = Color.White,
             ) {
                 Column {
                     Spacer(
                         modifier = Modifier
                             .height(12.dp)
-                            .fillMaxWidth()
+                            .fillMaxWidth(),
                     )
                     Text(
                         "이용권 필요",
@@ -136,12 +96,12 @@ fun QRScanner(navController: NavHostController, loginViewModel: LoginViewModel =
                             .wrapContentSize()
                             .padding(vertical = 8.dp),
                         fontSize = 20.sp,
-                        lineHeight = 17.sp
+                        lineHeight = 17.sp,
                     )
                     Spacer(
                         modifier = Modifier
                             .height(10.dp)
-                            .fillMaxWidth()
+                            .fillMaxWidth(),
                     )
                     Text(
                         "이용권 구매 시 자전거 대여 가능",
@@ -150,12 +110,12 @@ fun QRScanner(navController: NavHostController, loginViewModel: LoginViewModel =
                             .fillMaxWidth()
                             .wrapContentSize()
                             .padding(vertical = 8.dp),
-                        fontSize = 13.sp
+                        fontSize = 13.sp,
                     )
                     Spacer(
                         modifier = Modifier
                             .height(10.dp)
-                            .fillMaxWidth()
+                            .fillMaxWidth(),
                     )
                     Button(
                         onClick = {
@@ -168,15 +128,15 @@ fun QRScanner(navController: NavHostController, loginViewModel: LoginViewModel =
                             .padding(horizontal = 20.dp),
                         shape = RoundedCornerShape(24.dp),
                         colors = ButtonDefaults.buttonColors(
-                            backgroundColor = colorResource(R.color.dark_blue)
-                        )
+                            backgroundColor = colorResource(R.color.dark_blue),
+                        ),
                     ) {
                         Text("확인", fontSize = 16.sp, color = Color.White)
                     }
                     Spacer(
                         modifier = Modifier
                             .height(12.dp)
-                            .fillMaxWidth()
+                            .fillMaxWidth(),
                     )
                 }
             }
@@ -184,7 +144,7 @@ fun QRScanner(navController: NavHostController, loginViewModel: LoginViewModel =
     }
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
         AndroidView(
             factory = { AndroidViewContext ->
@@ -192,7 +152,7 @@ fun QRScanner(navController: NavHostController, loginViewModel: LoginViewModel =
                     this.scaleType = PreviewView.ScaleType.FILL_CENTER
                     layoutParams = ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT
+                        ViewGroup.LayoutParams.MATCH_PARENT,
                     )
                     implementationMode = PreviewView.ImplementationMode.COMPATIBLE
                 }
@@ -235,13 +195,13 @@ fun QRScanner(navController: NavHostController, loginViewModel: LoginViewModel =
                             lifecycleOwner,
                             cameraSelector,
                             preview,
-                            imageAnalysis
+                            imageAnalysis,
                         )
                     } catch (e: Exception) {
                         Log.d("TAG", "CameraPreview: ${e.localizedMessage}")
                     }
                 }, ContextCompat.getMainExecutor(context))
-            }
+            },
         )
         Text(
             modifier = Modifier
@@ -249,12 +209,12 @@ fun QRScanner(navController: NavHostController, loginViewModel: LoginViewModel =
                 .padding(horizontal = 20.dp, vertical = 20.dp)
                 .background(
                     color = Color.Black.copy(alpha = 0.5F),
-                    shape = RoundedCornerShape(10.dp)
+                    shape = RoundedCornerShape(10.dp),
                 ),
             text = "대여할 자전거의 QR을 찍으세요",
             fontSize = 25.sp,
             color = Color.White,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
 
         Button(onClick = {
@@ -281,8 +241,8 @@ fun QRScanner(navController: NavHostController, loginViewModel: LoginViewModel =
                 Button(
                     onClick = { navController.navigate("path find") },
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = colorResource(R.color.dark_blue)
-                    )
+                        backgroundColor = colorResource(R.color.dark_blue),
+                    ),
                 ) {
                     Text("대여", color = Color.White)
                 }
@@ -291,11 +251,12 @@ fun QRScanner(navController: NavHostController, loginViewModel: LoginViewModel =
                 Button(
                     onClick = { state = false },
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = colorResource(R.color.light_blue)
-                    )) {
+                        backgroundColor = colorResource(R.color.light_blue),
+                    ),
+                ) {
                     Text("취소", color = Color.White)
                 }
-            }
+            },
         )
     }
 }

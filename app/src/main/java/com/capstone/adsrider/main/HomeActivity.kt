@@ -6,6 +6,7 @@ import android.graphics.Paint
 import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,17 +43,22 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.capstone.adsrider.R
 import com.capstone.adsrider.intro.LoginActivity
 import com.capstone.adsrider.intro.LoginViewModel
 import com.capstone.adsrider.main.account.AccountScreen
 import com.capstone.adsrider.main.account.AccountViewModel
 import com.capstone.adsrider.main.buyticket.BuyTicketScreen
-import com.capstone.adsrider.main.rentbike.RentBikeScreen
+import com.capstone.adsrider.main.rentbike.AdsExposure
+import com.capstone.adsrider.main.rentbike.AdsView
+import com.capstone.adsrider.main.rentbike.PathFindScreen
+import com.capstone.adsrider.main.rentbike.QRScanner
 import com.capstone.adsrider.main.swapcoin.SwapCoinScreen
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
@@ -100,7 +107,7 @@ class HomeActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             Surface(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             ) {
                 AdsRider()
             }
@@ -126,11 +133,24 @@ fun convertTimestampToDate(timestamp: Long): String {
 @Composable
 fun AdsRider() {
     val navController = rememberNavController()
+    var showBottomBar by rememberSaveable { mutableStateOf(true) }
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    var currentRoute = navBackStackEntry?.destination?.route
+    Log.d("currentRoute", currentRoute.toString())
+
+    showBottomBar = currentRoute?.contains("ad exposure") == false
+
     Scaffold(
-        topBar = { TopBar(navController = navController) },
+        topBar = {
+            if (showBottomBar) {
+                TopBar(navController = navController)
+            }
+        },
         bottomBar = {
-            BottomNavigation(navController = navController)
-        }
+            if (showBottomBar) {
+                BottomNavigation(navController = navController)
+            }
+        },
     ) {
         Box(Modifier.padding(it)) {
             BottomNavigationGraph(navController = navController)
@@ -144,21 +164,22 @@ fun TopBar(navController: NavController) {
         modifier = Modifier
             .fillMaxWidth()
             .shadow(10.dp),
-        color = Color.White
+        color = Color.White,
     ) {
         Box(
             modifier = Modifier
                 .height(75.dp)
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 16.dp),
         ) {
             Box(
                 modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 Image(
                     modifier = Modifier.height(50.dp),
                     painter = painterResource(R.drawable.adsrider_name),
-                    contentDescription = "")
+                    contentDescription = "",
+                )
             }
             IconButton(
                 onClick = {
@@ -167,14 +188,14 @@ fun TopBar(navController: NavController) {
                             popUpTo(it) { saveState = true }
                         }
                     }
-                          },
-                modifier = Modifier.align(Alignment.CenterEnd)
+                },
+                modifier = Modifier.align(Alignment.CenterEnd),
             ) {
                 Icon(
                     painter = painterResource(id = BottomNavItem.MyPage.icon),
                     contentDescription = "My Page",
                     modifier = Modifier.size(40.dp),
-                    tint = colorResource(R.color.dark_blue)
+                    tint = colorResource(R.color.dark_blue),
                 )
             }
         }
@@ -187,7 +208,7 @@ fun HomeScreen() {
         modifier = Modifier
             .fillMaxSize()
             .background(colorResource(id = R.color.light_blue)),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Image(painter = painterResource(id = R.drawable.adsrider_logo), contentDescription = "logo")
     }
@@ -198,7 +219,7 @@ fun HomeScreen() {
 fun MyPage(
     accountViewModel: AccountViewModel = viewModel(),
     loginViewModel: LoginViewModel = viewModel(),
-    statisticViewModel: StatisticViewModel = viewModel()
+    statisticViewModel: StatisticViewModel = viewModel(),
 ) {
     val balance = accountViewModel.balance.collectAsState().value
     val user = loginViewModel.user.collectAsState().value
@@ -206,7 +227,7 @@ fun MyPage(
     val logoutState = loginViewModel.logoutState.collectAsState().value
     val context = LocalContext.current
     val meters = Array(7) { 0 }
-    val reward = Array(7){ 0f }
+    val reward = Array(7) { 0f }
 
     if (logoutState == "success") {
         loginViewModel.setSignInState("")
@@ -221,7 +242,7 @@ fun MyPage(
     Surface(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 20.dp)
+            .padding(horizontal = 20.dp),
     ) {
         accountViewModel.getBalance()
         loginViewModel.getUserInfo()
@@ -234,28 +255,29 @@ fun MyPage(
                 fontFamily = FontFamily.Monospace,
                 fontWeight = FontWeight.Bold,
                 color = colorResource(R.color.dark_blue),
-                text = "마이라이딩"
+                text = "마이라이딩",
             )
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 10.dp),
                 style = MaterialTheme.typography.h5,
-                text = " ${user.email}님")
+                text = " ${user.email}님",
+            )
             if (user.expired_date <= System.currentTimeMillis()) {
                 Canvas(
                     modifier = Modifier
                         .width(300.dp)
                         .height(180.dp)
-                        .align(Alignment.CenterHorizontally)
+                        .align(Alignment.CenterHorizontally),
                 ) {
                     drawRoundRect(
                         size = size,
                         color = Color.Black,
                         cornerRadius = CornerRadius(30f, 30f),
                         style = Stroke(
-                            pathEffect = PathEffect.dashPathEffect(floatArrayOf(20f, 20f), 0f)
-                        )
+                            pathEffect = PathEffect.dashPathEffect(floatArrayOf(20f, 20f), 0f),
+                        ),
                     )
                     drawIntoCanvas { canvas ->
                         val text = "이용권 없음"
@@ -269,31 +291,30 @@ fun MyPage(
                         canvas.nativeCanvas.drawText(text, x, y, paint)
                     }
                 }
-            }
-            else {
+            } else {
                 Box(
                     modifier = Modifier
                         .width(300.dp)
                         .height(180.dp)
                         .align(Alignment.CenterHorizontally)
                         .clip(RoundedCornerShape(12.dp))
-                        .background(colorResource(id = R.color.light_blue))
+                        .background(colorResource(id = R.color.light_blue)),
                 ) {
                     Column(
                         modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Image(painter = painterResource(id = R.drawable.adsrider_logo), contentDescription = "logo")
                     }
                     Column(
                         modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.Bottom,
-                        horizontalAlignment = Alignment.End
+                        horizontalAlignment = Alignment.End,
                     ) {
                         Text(
                             modifier = Modifier.padding(end = 10.dp, bottom = 10.dp),
-                            text = convertTimestampToDate(user.expired_date)
+                            text = convertTimestampToDate(user.expired_date),
                         )
                     }
                 }
@@ -302,19 +323,19 @@ fun MyPage(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(
                     modifier = Modifier.weight(1F),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(text = "ADS", fontSize = 15.sp)
                 }
                 Column(
                     modifier = Modifier.weight(1F),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    balance.forEach{
+                    balance.forEach {
                         if (it.type == "ADS") {
                             Text(text = it.amount, fontSize = 15.sp)
                         }
@@ -340,13 +361,27 @@ fun MyPage(
                 i++
             }
 
-            val chartEntryModelProducer1 = ChartEntryModelProducer(entriesOf(
-                meters[0], meters[1], meters[2], meters[3],
-                meters[4], meters[5], meters[6])
+            val chartEntryModelProducer1 = ChartEntryModelProducer(
+                entriesOf(
+                    meters[0],
+                    meters[1],
+                    meters[2],
+                    meters[3],
+                    meters[4],
+                    meters[5],
+                    meters[6],
+                ),
             )
-            val chartEntryModelProducer2 = ChartEntryModelProducer(entriesOf(
-                reward[0], reward[1], reward[2], reward[3],
-                reward[4], reward[5], reward[6])
+            val chartEntryModelProducer2 = ChartEntryModelProducer(
+                entriesOf(
+                    reward[0],
+                    reward[1],
+                    reward[2],
+                    reward[3],
+                    reward[4],
+                    reward[5],
+                    reward[6],
+                ),
             )
 
             val bottomLabel = mutableListOf<String>()
@@ -368,11 +403,11 @@ fun MyPage(
                         LineComponent(
                             color = android.graphics.Color.RED,
                             defaultColumn.thicknessDp,
-                            Shapes.roundedCornerShape(2.dp)
+                            Shapes.roundedCornerShape(2.dp),
                         )
                     }
                 },
-                targetVerticalAxisPosition = AxisPosition.Vertical.Start
+                targetVerticalAxisPosition = AxisPosition.Vertical.Start,
             )
             val lineChart = lineChart(
                 remember(defaultLines) {
@@ -380,11 +415,11 @@ fun MyPage(
                         defaultLine.copy(
                             pointConnector = DefaultPointConnector(cubicStrength = 0f),
                             lineColor = android.graphics.Color.BLUE,
-                            lineBackgroundShader = null
+                            lineBackgroundShader = null,
                         )
                     }
                 },
-                targetVerticalAxisPosition = AxisPosition.Vertical.End
+                targetVerticalAxisPosition = AxisPosition.Vertical.End,
             )
 
             Chart(
@@ -394,9 +429,10 @@ fun MyPage(
                 startAxis = startAxis(),
                 endAxis = endAxis(),
                 bottomAxis = bottomAxis(
-                    valueFormatter = { x, _ -> bottomLabel[x.toInt() % bottomLabel.size] }),
+                    valueFormatter = { x, _ -> bottomLabel[x.toInt() % bottomLabel.size] },
+                ),
                 marker = rememberMarker(),
-                legend = rememberLegend()
+                legend = rememberLegend(),
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -410,7 +446,7 @@ fun MyPage(
                 style = TextStyle(textDecoration = TextDecoration.Underline),
                 color = Color.Gray,
                 fontSize = 15.sp,
-                text = "로그아웃"
+                text = "로그아웃",
             )
         }
     }
@@ -423,7 +459,7 @@ fun rememberMarker(): Marker {
         ShapeComponent(MarkerCorneredShape(Corner.FullyRounded), labelBackgroundColor.toArgb()).setShadow(
             radius = 4f,
             dy = 2f,
-            applyElevationOverlay = true
+            applyElevationOverlay = true,
         )
     }
     val label = textComponent(
@@ -432,8 +468,10 @@ fun rememberMarker(): Marker {
         padding = dimensionsOf(8.dp, 4.dp),
         typeface = Typeface.MONOSPACE,
     )
-    val indicatorInnerComponent = shapeComponent(Shapes.pillShape,
-        androidx.compose.material3.MaterialTheme.colorScheme.surface)
+    val indicatorInnerComponent = shapeComponent(
+        Shapes.pillShape,
+        androidx.compose.material3.MaterialTheme.colorScheme.surface,
+    )
     val indicatorCenterComponent = shapeComponent(Shapes.pillShape, Color.White)
     val indicatorOuterComponent = shapeComponent(Shapes.pillShape, Color.White)
     val indicator = overlayingComponent(
@@ -448,7 +486,7 @@ fun rememberMarker(): Marker {
     val guideline = lineComponent(
         androidx.compose.material3.MaterialTheme.colorScheme.onSurface.copy(.2f),
         2.dp,
-        DashedShape(Shapes.pillShape, 8f, 4f)
+        DashedShape(Shapes.pillShape, 8f, 4f),
     )
     return remember(label, indicator, guideline) {
         object : MarkerComponent(label, indicator, guideline) {
@@ -475,6 +513,7 @@ fun rememberMarker(): Marker {
 
 val chartColor = listOf(Color.Blue, Color.Red)
 val chartLegend = listOf("리워드 지급", "주행거리")
+
 @Composable
 private fun rememberLegend() = verticalLegend(
     items = chartColor.mapIndexed { index, chartColor ->
@@ -485,7 +524,7 @@ private fun rememberLegend() = verticalLegend(
                 textSize = 12.sp,
                 typeface = Typeface.MONOSPACE,
             ),
-            labelText = chartLegend[index]
+            labelText = chartLegend[index],
         )
     },
     iconSize = 8.dp,
@@ -499,14 +538,36 @@ private fun rememberLegend() = verticalLegend(
 fun BottomNavigationGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = BottomNavItem.Home.screenRoute
+        startDestination = BottomNavItem.Home.screenRoute,
     ) {
         composable(BottomNavItem.Home.screenRoute) { HomeScreen() }
-        composable(BottomNavItem.RentBike.screenRoute) { RentBikeScreen() }
+        composable(BottomNavItem.RentBike.screenRoute) { QRScanner(navController = navController) }
         composable(BottomNavItem.ButTicket.screenRoute) { BuyTicketScreen() }
         composable(BottomNavItem.Withdrawal.screenRoute) { AccountScreen() }
         composable(BottomNavItem.SwapCoin.screenRoute) { SwapCoinScreen() }
         composable(BottomNavItem.MyPage.screenRoute) { MyPage() }
+
+        // rentbike
+        composable("path find") {
+            PathFindScreen(navController = navController)
+        }
+        composable("rent bike") {
+            QRScanner(navController = navController)
+        }
+        composable("ad select") {
+            AdsView(navController = navController)
+        }
+        composable(
+            "ad exposure/{imageId}",
+            arguments = listOf(
+                navArgument("imageId") {
+                    type = NavType.IntType
+                },
+            ),
+        ) {
+            val imageId = it.arguments?.getInt("imageId")
+            AdsExposure(imageId!!, navController = navController)
+        }
     }
 }
 
@@ -518,12 +579,12 @@ fun BottomNavigation(navController: NavController) {
         BottomNavItem.RentBike,
         BottomNavItem.ButTicket,
         BottomNavItem.SwapCoin,
-        BottomNavItem.Withdrawal
+        BottomNavItem.Withdrawal,
     )
 
     BottomNavigation(
         backgroundColor = Color.White,
-        contentColor = Color.Black
+        contentColor = Color.Black,
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
@@ -534,7 +595,7 @@ fun BottomNavigation(navController: NavController) {
                 icon = {
                     Icon(
                         painter = painterResource(id = item.icon),
-                        contentDescription = item.screenRoute
+                        contentDescription = item.screenRoute,
                     )
                 },
                 selected = currentRoute == item.screenRoute,
@@ -549,7 +610,7 @@ fun BottomNavigation(navController: NavController) {
                         launchSingleTop = true
                         restoreState = true
                     }
-                }
+                },
             )
         }
     }
