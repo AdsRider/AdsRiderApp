@@ -3,6 +3,7 @@ package com.capstone.adsrider.main.rentbike
 import android.Manifest
 import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
@@ -12,6 +13,7 @@ import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -26,11 +28,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.core.app.ActivityCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
@@ -58,6 +63,7 @@ fun AdsExposure(
     val result = adsExposureViewModel.result.collectAsState().value
     val path = adsExposureViewModel.path.collectAsState().value
     val distance = adsExposureViewModel.distance.collectAsState().value
+    val view = LocalView.current
     Log.d("result", result.toString())
 
     if (ActivityCompat.checkSelfPermission(
@@ -203,13 +209,22 @@ fun AdsExposure(
                 .fillMaxSize()
                 .align(Alignment.Center),
         )
-        Button(onClick = {
-            val gson = Gson()
-            val itemType = object : TypeToken<List<LatLng>>() {}.type
-            val pathList = gson.fromJson<List<LatLng>>(resultData.path, itemType)
-            adsExposureViewModel.getPath(pathList[0], myLocation)
-        }) {
-            Text(text = "주행완료")
+        Column() {
+            Button(
+                onClick = { requestFullScreen(view) },
+            ) {
+                Text("전체화면으로")
+            }
+            Button(onClick = {
+                cancelFullScreen(view)
+
+                val gson = Gson()
+                val itemType = object : TypeToken<List<LatLng>>() {}.type
+                val pathList = gson.fromJson<List<LatLng>>(resultData.path, itemType)
+                adsExposureViewModel.getPath(pathList[0], myLocation)
+            }) {
+                Text(text = "주행완료")
+            }
         }
 //        Row(
 //            modifier = Modifier
@@ -249,4 +264,30 @@ fun AdsExposure(
 //            }
 //        }
     }
+}
+
+fun requestFullScreen(view: View) {
+    // !! should be safe here since the view is part of an Activity
+    val window = view.context.getActivity()!!.window
+    WindowCompat.getInsetsController(window, view).hide(
+        WindowInsetsCompat.Type.statusBars() or
+            WindowInsetsCompat.Type.navigationBars(),
+    )
+}
+
+fun cancelFullScreen(view: View) {
+    // !! should be safe here since the view is part of an Activity
+    val window = view.context.getActivity()!!.window
+    WindowCompat.getInsetsController(window, view).show(
+        WindowInsetsCompat.Type.statusBars() or
+            WindowInsetsCompat.Type.navigationBars(),
+    )
+}
+
+fun Context.getActivity(): Activity? = when (this) {
+    is Activity -> this
+    // this recursion should be okay since we call getActivity on a view context
+    // that should have an Activity as its baseContext at some point
+    is ContextWrapper -> baseContext.getActivity()
+    else -> null
 }
