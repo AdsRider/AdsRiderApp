@@ -53,11 +53,14 @@ fun AdsView(navController: NavHostController, adsViewModel: AdsViewModel = viewM
     val ads by adsViewModel.ads.collectAsState()
     var state by remember { mutableStateOf(false) }
     var index by remember { mutableStateOf(0) }
+    val filteredAds = ads.filter {
+        it.end_date.toDouble() > System.currentTimeMillis() && it.start_date.toDouble() < System.currentTimeMillis()
+    }
 
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 20.dp)
+            .padding(horizontal = 20.dp),
     ) {
         item {
             Text(
@@ -66,10 +69,10 @@ fun AdsView(navController: NavHostController, adsViewModel: AdsViewModel = viewM
                     .padding(top = 20.dp),
                 style = MaterialTheme.typography.h4,
                 color = colorResource(R.color.dark_blue),
-                text = "광고 선택"
+                text = "광고 선택",
             )
         }
-        items(ads) {
+        items(filteredAds) {
             Row(
                 modifier = Modifier
                     .height(100.dp)
@@ -77,29 +80,31 @@ fun AdsView(navController: NavHostController, adsViewModel: AdsViewModel = viewM
                         state = true
                         index = ads.indexOf(it)
                     },
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Image(
                     modifier = Modifier.width(100.dp),
                     painter = rememberAsyncImagePainter("https://adsrider.wo.tc/api/image/${it.image_id}"),
-                    contentDescription = "Ad image"
+                    contentDescription = "Ad image",
                 )
-                Text(
-                    style = MaterialTheme.typography.h5,
-                    color = colorResource(R.color.light_blue),
-                    text = "   ${it.title}"
-                )
-                Text(
-                    modifier = Modifier.weight(1F),
-                    style = MaterialTheme.typography.h5,
-                    textAlign = TextAlign.Right,
-                    color = colorResource(R.color.light_blue),
-                    text = "${it.reward} ads    "
-                )
+                Column {
+                    Text(
+                        style = MaterialTheme.typography.h5,
+                        color = colorResource(R.color.light_blue),
+                        text = "  ${it.title}",
+                    )
+                    Text(
+                        modifier = Modifier.weight(1F),
+                        style = MaterialTheme.typography.h5,
+                        textAlign = TextAlign.Right,
+                        color = colorResource(R.color.light_blue),
+                        text = "  ${it.reward} ads    ",
+                    )
+                }
             }
             Divider(
                 modifier = Modifier.fillMaxWidth(),
-                thickness = 1.dp
+                thickness = 1.dp,
             )
         }
     }
@@ -109,49 +114,49 @@ fun AdsView(navController: NavHostController, adsViewModel: AdsViewModel = viewM
             properties = BottomSheetDialogProperties(
                 dismissOnBackPress = true,
                 dismissOnClickOutside = true,
-                navigationBarColor = MaterialTheme.colors.surface
-            )
+                navigationBarColor = MaterialTheme.colors.surface,
+            ),
         ) {
             Surface(
-                shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+                shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
 
                 ) {
                     Text(
                         style = MaterialTheme.typography.h5,
-                        text = ads[index].title
+                        text = ads[index].title,
                     )
                     Text(
                         style = MaterialTheme.typography.body1,
-                        text = "광고정보: ${ads[index].subtitle}\n" + "지급 코인: ${ads[index].reward}"
+                        text = "광고정보: ${ads[index].subtitle}\n" + "지급 코인: ${ads[index].reward}",
                     )
                     Text(
                         color = Color.LightGray,
                         fontSize = 20.sp,
-                        text = "광고디자인"
+                        text = "광고디자인",
                     )
                     Divider(
                         modifier = Modifier.fillMaxWidth(),
                         color = Color.LightGray,
-                        thickness = 1.dp
+                        thickness = 1.dp,
                     )
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(200.dp),
-                        contentAlignment = Alignment.Center
+                        contentAlignment = Alignment.Center,
                     ) {
                         Image(
                             painter = rememberAsyncImagePainter(
-                                "https://adsrider.wo.tc/api/image/${ads[index].image_id}"
+                                "https://adsrider.wo.tc/api/image/${ads[index].image_id}",
                             ),
                             contentDescription = "Ads Design",
-                            modifier = Modifier.height(200.dp)
+                            modifier = Modifier.height(200.dp),
                         )
                     }
                     Spacer(modifier = Modifier.height(10.dp))
@@ -160,7 +165,7 @@ fun AdsView(navController: NavHostController, adsViewModel: AdsViewModel = viewM
                             .fillMaxWidth()
                             .height(50.dp),
                         colors = ButtonDefaults.buttonColors(
-                            backgroundColor = colorResource(R.color.dark_blue)
+                            backgroundColor = colorResource(R.color.dark_blue),
                         ),
                         onClick = {
                             val resultData = RidingSharedPreference(App.context()).getRidingPrefs()
@@ -170,11 +175,11 @@ fun AdsView(navController: NavHostController, adsViewModel: AdsViewModel = viewM
                             resultData.start_time = current.format(formatter)
                             RidingSharedPreference(App.context()).setRidingPrefs(resultData)
                             navController.navigate("ad exposure/${ads[index].image_id}")
-                        }
+                        },
                     ) {
                         Text(
                             color = Color.White,
-                            text = "광고 선택"
+                            text = "광고 선택",
                         )
                     }
                     Spacer(modifier = Modifier.height(10.dp))
